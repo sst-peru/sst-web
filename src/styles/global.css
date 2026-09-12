@@ -151,3 +151,165 @@ form label { font-size: 12px; color: var(--muted); }
   .detail-grid { grid-template-columns: 1fr; }
   .content { padding: 18px 16px; }
 }
+
+/* --------------------------------------------------------------------------
+   Formularios, modales y tablas anchas (agregado al cerrar la paridad con móvil)
+   -------------------------------------------------------------------------- */
+
+.page-head.row,
+.row {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.actions {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  flex-wrap: wrap;
+  margin-top: 4px;
+}
+
+button.secondary {
+  background: var(--surface);
+  color: var(--text);
+  border: 1px solid var(--border);
+}
+
+button.secondary:hover { background: var(--bg); }
+button.link.danger { color: var(--danger); }
+
+.field { display: flex; flex-direction: column; gap: 4px; }
+.field-label { font-size: 12px; color: var(--muted); font-weight: 600; }
+.required { color: var(--danger); }
+
+.form-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 14px;
+}
+
+.form-grid h2 { grid-column: 1 / -1; margin: 0; }
+.form-grid .field textarea { resize: vertical; }
+.form-card { max-width: 820px; }
+.register-card { width: min(560px, 92vw); }
+
+label.inline {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
+  color: var(--text);
+}
+
+/* Asistente del formulario rápido */
+.wizard { display: flex; flex-direction: column; gap: 12px; }
+.choices { display: flex; flex-direction: column; gap: 10px; }
+.choices h2 { margin: 0 0 4px; font-size: 18px; text-transform: none; letter-spacing: 0; color: var(--text); }
+
+button.choice {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 4px;
+  text-align: left;
+  background: var(--surface);
+  color: var(--text);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 16px 18px;
+  font-weight: 500;
+}
+
+button.choice:hover { border-color: var(--primary); background: #f5f9ff; }
+button.choice strong { font-size: 15px; }
+
+.pill-row { display: flex; gap: 8px; flex-wrap: wrap; }
+
+button.pill-button {
+  background: var(--surface);
+  color: var(--text);
+  border: 1px solid var(--border);
+  border-radius: 99px;
+  padding: 6px 14px;
+  font-size: 13px;
+}
+
+button.pill-button.active {
+  background: var(--primary);
+  color: #fff;
+  border-color: var(--primary);
+}
+
+/* Modales */
+.modal-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(20, 26, 32, 0.45);
+  display: grid;
+  place-items: center;
+  padding: 20px;
+  z-index: 50;
+}
+
+.modal {
+  background: var(--surface);
+  border-radius: var(--radius);
+  padding: 20px 22px;
+  width: min(720px, 96vw);
+  max-height: 88vh;
+  overflow-y: auto;
+  box-shadow: 0 18px 50px rgba(0, 0, 0, 0.2);
+}
+
+.modal-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 14px;
+}
+
+.modal-head h2 { margin: 0; font-size: 17px; text-transform: none; letter-spacing: 0; color: var(--text); }
+
+/* Tablas anchas: scrollan solas en vez de romper el layout */
+.table-scroll { overflow-x: auto; }
+.table-scroll table { min-width: 720px; }
+td.nowrap { white-space: nowrap; }
+tr.fila-alerta { background: #fff8f6; }
+
+.checklist { list-style: none; padding: 0; margin: 0 0 14px; display: flex; flex-direction: column; gap: 8px; }
+.checklist label { display: flex; align-items: center; gap: 8px; }
+
+/* Actas del comité */
+.acta {
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 14px 16px;
+  margin-bottom: 12px;
+}
+
+.acuerdos { list-style: none; padding: 0; margin: 10px 0; display: flex; flex-direction: column; gap: 8px; }
+
+.acuerdos li {
+  display: grid;
+  grid-template-columns: 1fr auto auto;
+  gap: 10px;
+  align-items: center;
+  padding: 8px 0;
+  border-top: 1px solid var(--border);
+}
+
+.card.aviso {
+  border-left: 4px solid var(--warning);
+  background: #fffaf3;
+}
+
+hr { border: none; border-top: 1px solid var(--border); margin: 16px 0; }
+
+@media (max-width: 720px) {
+  .acuerdos li { grid-template-columns: 1fr; }
+  .form-grid { grid-template-columns: 1fr; }
+}

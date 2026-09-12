@@ -3,6 +3,7 @@ import { createContext, useCallback, useContext, useEffect, useMemo, useState } 
 import { tokens } from "../../api/client";
 import { auth } from "../../api/endpoints";
 import type { User } from "../../api/types";
+import type { ReactNode } from "react";
 
 interface AuthState {
   user: User | null;
@@ -14,7 +15,7 @@ interface AuthState {
 
 const AuthContext = createContext<AuthState | null>(null);
 
-export function AuthProvider({ children }: { children: React.ReactNode }) {
+export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
 

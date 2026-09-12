@@ -1,6 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 
-import { metrics } from "../../api/endpoints";
+import { committee, exportar, metrics } from "../../api/endpoints";
 
 function formatHours(hours: number | null | undefined) {
   if (hours === null || hours === undefined) return "—";
@@ -14,12 +14,26 @@ export default function DashboardPage() {
     queryKey: ["compliance"],
     queryFn: () => metrics.compliance(90),
   });
+  const comite = useQuery({
+    queryKey: ["committee-compliance"],
+    queryFn: committee.compliance,
+  });
 
   return (
     <>
-      <header className="page-head">
-        <h1>Tablero de SST</h1>
-        <p className="muted">Últimos 90 días</p>
+      <header className="page-head row">
+        <div>
+          <h1>Tablero de SST</h1>
+          <p className="muted">Últimos 90 días</p>
+        </div>
+        <div className="actions">
+          <button type="button" className="secondary" onClick={() => exportar("reports")}>
+            Exportar reportes
+          </button>
+          <button type="button" className="secondary" onClick={() => exportar("inspections")}>
+            Exportar inspecciones
+          </button>
+        </div>
       </header>
 
       <section className="kpi-grid">
@@ -54,6 +68,28 @@ export default function DashboardPage() {
           <span className="kpi-label">Inspecciones vencidas</span>
           <strong className="kpi-value alert">{compliance.data?.overdue ?? "—"}</strong>
           <span className="muted small">Pasaron su fecha y no se hicieron</span>
+        </article>
+
+        <article className="card kpi">
+          <span className="kpi-label">Acuerdos del comité</span>
+          <strong className="kpi-value">
+            {comite.data?.agreements_compliance_pct != null
+              ? `${comite.data.agreements_compliance_pct}%`
+              : "—"}
+          </strong>
+          <span className="muted small">
+            {comite.data?.has_committee
+              ? `${comite.data.agreements_done ?? 0} de ${comite.data.agreements_total ?? 0} cumplidos`
+              : "Sin comité registrado"}
+          </span>
+        </article>
+
+        <article className="card kpi">
+          <span className="kpi-label">Actas registradas</span>
+          <strong className="kpi-value">{comite.data?.meetings_total ?? 0}</strong>
+          <span className="muted small">
+            {comite.data?.meetings_with_quorum ?? 0} con quórum válido
+          </span>
         </article>
       </section>
 
