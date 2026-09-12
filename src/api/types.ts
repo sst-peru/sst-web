@@ -109,3 +109,183 @@ export interface ExperimentResults {
   }[];
   lift_pct_first_vs_second: number | null;
 }
+
+// ---------------------------------------------------------------------------
+// IPERC
+// ---------------------------------------------------------------------------
+
+export type MatrixStatus = "BORRADOR" | "VIGENTE" | "HISTORICA";
+export type RiskLevel = "TRIVIAL" | "TOLERABLE" | "MODERADO" | "IMPORTANTE" | "INTOLERABLE";
+
+export interface IpercEntry {
+  id: number;
+  matrix: number;
+  area: number;
+  area_name: string;
+  job_position: string;
+  hazard: string;
+  risk: string;
+  probability: number;
+  consequence: number;
+  risk_score: number;
+  risk_level: RiskLevel;
+  existing_controls: string;
+  proposed_controls: string;
+  responsible: number | null;
+  source_report: number | null;
+  updated_at: string;
+}
+
+export interface IpercMatrix {
+  id: number;
+  version: number;
+  status: MatrixStatus;
+  valid_from: string | null;
+  approved_by: number | null;
+  created_at: string;
+  entry_count: number;
+  entries: IpercEntry[];
+}
+
+// ---------------------------------------------------------------------------
+// EPP
+// ---------------------------------------------------------------------------
+
+export interface EppItem {
+  id: number;
+  name: string;
+  description: string;
+  lifespan_days: number;
+  stock: number;
+  is_active: boolean;
+}
+
+export interface EppDelivery {
+  id: number;
+  item: number;
+  item_name: string;
+  worker: number;
+  worker_name: string;
+  delivered_by: number | null;
+  quantity: number;
+  delivered_at: string;
+  expires_at: string | null;
+  acknowledged: boolean;
+  notes: string;
+  is_expired: boolean;
+}
+
+// ---------------------------------------------------------------------------
+// Inspecciones
+// ---------------------------------------------------------------------------
+
+export type Frequency = "SEMANAL" | "QUINCENAL" | "MENSUAL" | "TRIMESTRAL";
+export type InspectionStatus = "PENDIENTE" | "REALIZADA" | "VENCIDA";
+
+export interface InspectionSchedule {
+  id: number;
+  title: string;
+  area: number;
+  area_name: string;
+  checklist: string[];
+  frequency: Frequency;
+  responsible: number | null;
+  is_active: boolean;
+}
+
+export interface Inspection {
+  id: number;
+  schedule: number;
+  title: string;
+  area_name: string;
+  due_date: string;
+  performed_at: string | null;
+  performed_by: number | null;
+  status: InspectionStatus;
+  findings: string;
+  results: Record<string, boolean>;
+  is_overdue: boolean;
+}
+
+// ---------------------------------------------------------------------------
+// Comité de SST
+// ---------------------------------------------------------------------------
+
+export type MemberRole = "PRESIDENTE" | "SECRETARIO" | "TITULAR" | "SUPLENTE" | "SUPERVISOR";
+export type Represents = "EMPLEADOR" | "TRABAJADORES";
+export type AgreementStatus = "PENDIENTE" | "EN_PROCESO" | "CUMPLIDO" | "NO_CUMPLIDO";
+
+export interface CommitteeMember {
+  id: number;
+  committee: number;
+  user: number;
+  user_name: string;
+  role: MemberRole;
+  represents: Represents;
+  is_active: boolean;
+}
+
+export interface Agreement {
+  id: number;
+  meeting: number;
+  description: string;
+  responsible: number | null;
+  responsible_name: string | null;
+  due_date: string | null;
+  status: AgreementStatus;
+  related_report: number | null;
+  related_iperc_entry: number | null;
+}
+
+export interface Meeting {
+  id: number;
+  committee: number;
+  number: number;
+  date: string;
+  place: string;
+  is_extraordinary: boolean;
+  agenda: string;
+  minutes: string;
+  attendees: number[];
+  attendee_count: number;
+  quorum_reached: boolean;
+  agreements: Agreement[];
+  created_at: string;
+}
+
+export interface Committee {
+  id: number;
+  period_start: string;
+  period_end: string;
+  is_supervisor_mode: boolean;
+  members: CommitteeMember[];
+  member_count: number;
+  quorum_required: number;
+  is_paritario: boolean;
+}
+
+export interface CommitteeCompliance {
+  has_committee: boolean;
+  is_supervisor_mode?: boolean;
+  is_paritario?: boolean;
+  members?: number;
+  quorum_required?: number;
+  meetings_total?: number;
+  meetings_with_quorum?: number;
+  agreements_total?: number;
+  agreements_done?: number;
+  agreements_pending?: number;
+  agreements_compliance_pct?: number | null;
+}
+
+// ---------------------------------------------------------------------------
+// Experimento A/B
+// ---------------------------------------------------------------------------
+
+export interface Assignment {
+  id: number;
+  experiment: number;
+  experiment_key: string;
+  variant: string;
+  assigned_at: string;
+}
