@@ -1,9 +1,10 @@
 import { useQuery } from "@tanstack/react-query";
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
-import { catalog, reports } from "../../api/endpoints";
+import { areas as areasApi, exportar, reports } from "../../api/endpoints";
 import type { ReportStatus, Severity } from "../../api/types";
+import { useAuth } from "../auth/AuthContext";
 
 const STATUS_LABEL: Record<ReportStatus, string> = {
   ABIERTO: "Abierto",
@@ -20,11 +21,13 @@ const SEVERITY_CLASS: Record<Severity, string> = {
 };
 
 export default function ReportsPage() {
+  const navigate = useNavigate();
+  const { canManage } = useAuth();
   const [status, setStatus] = useState("");
   const [kind, setKind] = useState("");
   const [area, setArea] = useState("");
 
-  const areas = useQuery({ queryKey: ["areas"], queryFn: catalog.areas });
+  const areas = useQuery({ queryKey: ["areas"], queryFn: areasApi.list });
   const { data, isLoading } = useQuery({
     queryKey: ["reports", { status, kind, area }],
     queryFn: () =>
@@ -37,9 +40,21 @@ export default function ReportsPage() {
 
   return (
     <>
-      <header className="page-head">
-        <h1>Reportes de actos y condiciones inseguras</h1>
-        <p className="muted">{data?.count ?? 0} reportes</p>
+      <header className="page-head row">
+        <div>
+          <h1>Reportes de actos y condiciones inseguras</h1>
+          <p className="muted">{data?.count ?? 0} reportes</p>
+        </div>
+        <div className="actions">
+          {canManage && (
+            <button type="button" className="secondary" onClick={() => exportar("reports")}>
+              Exportar a Excel
+            </button>
+          )}
+          <button type="button" onClick={() => navigate("/reportes/nuevo")}>
+            Reportar
+          </button>
+        </div>
       </header>
 
       <section className="filters card">
