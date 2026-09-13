@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 
 import { areas, categories, experiments, reports } from "../../api/endpoints";
 import { ErrorBox, Field, Select } from "../../components/Form";
+import { FotoAmpliable } from "../../components/FotoAmpliable";
 import type { ReportKind, Severity } from "../../api/types";
 
 const SEVERIDADES: { value: Severity; label: string }[] = [
@@ -346,7 +347,7 @@ function VistaPreviaFoto({
 
   return (
     <div className="foto-previa">
-      <img src={url} alt="Vista previa de la evidencia" />
+      <FotoAmpliable src={url} alt="Vista previa de la evidencia" />
       <div className="foto-previa-datos">
         <span className="nombre">{archivo.name}</span>
         <span className="muted small">{(archivo.size / 1024 / 1024).toFixed(1)} MB</span>

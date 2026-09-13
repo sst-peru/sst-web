@@ -542,6 +542,56 @@ input[type="file"]::file-selector-button:hover {
   border-color: var(--navy-600);
 }
 
+/* Visor de foto a pantalla completa (al tocar una imagen ampliable). */
+img.ampliable { cursor: zoom-in; }
+img.ampliable:hover { border-color: var(--navy-600); }
+img.ampliable:focus-visible { outline: none; border-color: var(--navy-700); box-shadow: 0 0 0 3px var(--blue-100); }
+
+.visor-foto {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  background: rgba(12, 29, 51, 0.9);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+  padding: 24px;
+  cursor: zoom-out;
+}
+
+.visor-foto img {
+  max-width: min(1100px, 92vw);
+  max-height: 82vh;
+  object-fit: contain;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: var(--radius);
+  background: var(--navy-900);
+  cursor: default;
+}
+
+.visor-cerrar {
+  position: absolute;
+  top: 18px;
+  right: 20px;
+  background: transparent;
+  border-color: rgba(255, 255, 255, 0.35);
+  color: var(--white);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  font-size: 12px;
+}
+
+.visor-cerrar:hover { background: rgba(255, 255, 255, 0.12); border-color: var(--white); }
+
+.visor-pie { color: #9fb4c9; font-size: 12px; margin: 0; }
+
+@media (max-width: 720px) {
+  .visor-foto img { max-height: 74vh; }
+  .visor-cerrar { top: 12px; right: 12px; }
+}
+
 /* Vista previa de la foto recién elegida, antes de enviar el reporte. */
 .foto-previa {
   display: flex;

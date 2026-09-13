@@ -4,6 +4,7 @@ import { Link, useParams } from "react-router-dom";
 
 import { reports, users } from "../../api/endpoints";
 import { ErrorBox, Field, Select } from "../../components/Form";
+import { FotoAmpliable } from "../../components/FotoAmpliable";
 import { useAuth } from "../auth/AuthContext";
 
 const ESTADOS: Record<string, string> = {
@@ -127,7 +128,13 @@ export default function ReportDetailPage() {
               <strong>Acción correctiva:</strong> {reporte.closure_note}
             </p>
           )}
-          {reporte.photo && <img className="report-photo" src={reporte.photo} alt="Evidencia del hallazgo" />}
+          {reporte.photo && (
+            <FotoAmpliable
+              className="report-photo"
+              src={reporte.photo}
+              alt="Evidencia del hallazgo"
+            />
+          )}
         </section>
 
         <section className="card">
