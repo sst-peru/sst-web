@@ -19,11 +19,18 @@ const NAV: { to: string; label: string; managerOnly?: boolean; end?: boolean }[]
   { to: "/reportes", label: "Reportes", end: true },
   { to: "/iperc", label: "Matriz IPERC" },
   { to: "/inspecciones", label: "Inspecciones" },
-  { to: "/epp", label: "EPP" },
+  { to: "/epp", label: "Equipos de protección" },
   { to: "/comite", label: "Comité de SST" },
   { to: "/experimento", label: "Experimento A/B", managerOnly: true },
   { to: "/usuarios", label: "Usuarios y áreas", managerOnly: true },
 ];
+
+const HOY = new Intl.DateTimeFormat("es-PE", {
+  weekday: "long",
+  day: "numeric",
+  month: "long",
+  year: "numeric",
+});
 
 export default function Layout() {
   const { user, logout, canManage } = useAuth();
@@ -32,7 +39,15 @@ export default function Layout() {
   return (
     <div className="app-shell">
       <aside className="sidebar">
-        <div className="brand">SST</div>
+        <div className="brand">
+          <div className="brand-name">Resguardo</div>
+          <div className="brand-tagline">
+            Sistema de Gestión de
+            <br />
+            Seguridad y Salud en el Trabajo
+          </div>
+        </div>
+
         <nav>
           {visibles.map((item) => (
             <NavLink key={item.to} to={item.to} end={item.end}>
@@ -40,17 +55,35 @@ export default function Layout() {
             </NavLink>
           ))}
         </nav>
+
         <div className="sidebar-footer">
           <div className="user-name">{user?.first_name || user?.username}</div>
-          <div className="muted small">{ROLE_LABEL[user?.role ?? ""] ?? ""}</div>
-          {user?.company_name && <div className="muted small">{user.company_name}</div>}
+          <div className="muted">{ROLE_LABEL[user?.role ?? ""] ?? ""}</div>
           <button type="button" className="link" onClick={logout}>
             Cerrar sesión
           </button>
         </div>
       </aside>
+
       <main className="content">
-        <Outlet />
+        <header className="topbar">
+          <div className="company">
+            {user?.company_name ?? "—"} <span>· Unidad de Seguridad y Salud en el Trabajo</span>
+          </div>
+          <div className="meta">{HOY.format(new Date())}</div>
+        </header>
+
+        <div className="page">
+          <Outlet />
+        </div>
+
+        <footer className="page-foot">
+          <span>
+            Resguardo · Sistema de Gestión de SST conforme a la Ley N° 29783 y su Reglamento
+            (D.S. N° 005-2012-TR)
+          </span>
+          <span>{user?.company_name ?? ""}</span>
+        </footer>
       </main>
     </div>
   );

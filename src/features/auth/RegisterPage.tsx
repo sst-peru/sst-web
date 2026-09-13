@@ -49,8 +49,10 @@ export default function RegisterPage() {
           registrar.mutate();
         }}
       >
-        <h1>Crear cuenta</h1>
-        <p className="muted">Sistema de Gestión de Seguridad y Salud en el Trabajo</p>
+        <h1>Resguardo</h1>
+        <p className="muted small">
+          Registro de trabajadores · Sistema de Gestión de SST
+        </p>
 
         <div className="form-grid">
           <Field label="Nombres" required>
@@ -110,6 +112,8 @@ export default function RegisterPage() {
         <Link to="/login" className="small">
           Ya tengo cuenta
         </Link>
+
+        <p className="login-legal">Ley N° 29783 · Reglamento D.S. N° 005-2012-TR</p>
       </form>
     </div>
   );
