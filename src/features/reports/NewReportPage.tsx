@@ -1,5 +1,5 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 import { areas, categories, experiments, reports } from "../../api/endpoints";
@@ -47,6 +47,7 @@ export default function NewReportPage() {
   const queryClient = useQueryClient();
   const [borrador, setBorrador] = useState<Borrador>(BORRADOR_VACIO);
   const [paso, setPaso] = useState(1);
+  const [vistaPrevia, setVistaPrevia] = useState<string | null>(null);
 
   const variante = useQuery({
     queryKey: ["my-variant"],
@@ -81,12 +82,33 @@ export default function NewReportPage() {
     },
   });
 
+  /**
+   * Guarda la foto elegida y arma su miniatura.
+   *
+   * createObjectURL evita leer el archivo entero a base64 solo para mostrarlo; hay que
+   * liberar la URL anterior o cada foto nueva deja la anterior en memoria.
+   */
+  function elegirFoto(archivo: File | null) {
+    setVistaPrevia((anterior) => {
+      if (anterior) URL.revokeObjectURL(anterior);
+      return archivo ? URL.createObjectURL(archivo) : null;
+    });
+    set("photo", archivo);
+  }
+
+  useEffect(() => {
+    return () => {
+      if (vistaPrevia) URL.revokeObjectURL(vistaPrevia);
+    };
+  }, [vistaPrevia]);
+
   function ubicar() {
     if (!navigator.geolocation) return;
     navigator.geolocation.getCurrentPosition(
       (posicion) => {
-        set("latitude", posicion.coords.latitude);
-        set("longitude", posicion.coords.longitude);
+        // Seis decimales (~11 cm) es lo que acepta el API y más que suficiente en campo.
+        set("latitude", Number(posicion.coords.latitude.toFixed(6)));
+        set("longitude", Number(posicion.coords.longitude.toFixed(6)));
       },
       // Si el navegador la niega, el reporte se manda igual sin coordenadas.
       () => undefined,
@@ -168,8 +190,9 @@ export default function NewReportPage() {
               <input
                 type="file"
                 accept="image/*"
-                onChange={(e) => set("photo", e.target.files?.[0] ?? null)}
+                onChange={(e) => elegirFoto(e.target.files?.[0] ?? null)}
               />
+              <VistaPreviaFoto url={vistaPrevia} archivo={borrador.photo} onQuitar={() => elegirFoto(null)} />
             </Field>
             <Field label="Ubicación">
               <button type="button" className="secondary" onClick={ubicar}>
@@ -246,10 +269,11 @@ export default function NewReportPage() {
                     type="file"
                     accept="image/*"
                     onChange={(e) => {
-                      set("photo", e.target.files?.[0] ?? null);
+                      elegirFoto(e.target.files?.[0] ?? null);
                       ubicar();
                     }}
                   />
+                  <VistaPreviaFoto url={vistaPrevia} archivo={borrador.photo} onQuitar={() => elegirFoto(null)} />
                 </Field>
                 <Field label="Área">
                   <Select value={borrador.area} onChange={(v) => set("area", v)} options={opcionesAreas} />
@@ -305,5 +329,31 @@ export default function NewReportPage() {
         )}
       </form>
     </>
+  );
+}
+
+/** Miniatura de la foto elegida, con su peso y la opción de quitarla. */
+function VistaPreviaFoto({
+  url,
+  archivo,
+  onQuitar,
+}: {
+  url: string | null;
+  archivo: File | null;
+  onQuitar: () => void;
+}) {
+  if (!url || !archivo) return null;
+
+  return (
+    <div className="foto-previa">
+      <img src={url} alt="Vista previa de la evidencia" />
+      <div className="foto-previa-datos">
+        <span className="nombre">{archivo.name}</span>
+        <span className="muted small">{(archivo.size / 1024 / 1024).toFixed(1)} MB</span>
+        <button type="button" className="link danger" onClick={onQuitar}>
+          Quitar
+        </button>
+      </div>
+    </div>
   );
 }
