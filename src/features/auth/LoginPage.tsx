@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 import { useAuth } from "./AuthContext";
 
@@ -28,10 +28,14 @@ export default function LoginPage() {
   return (
     <div className="login-shell">
       <form className="card login-card" onSubmit={handleSubmit}>
-        <h1>Sistema de Gestión de SST</h1>
-        <p className="muted">Comité de Seguridad y Salud en el Trabajo</p>
+        <h1>Resguardo</h1>
+        <p className="muted small">
+          Sistema de Gestión de Seguridad y Salud en el Trabajo
+        </p>
 
-        <label htmlFor="username">Usuario</label>
+        <label htmlFor="username" className="field-label">
+          Usuario
+        </label>
         <input
           id="username"
           value={username}
@@ -40,7 +44,9 @@ export default function LoginPage() {
           required
         />
 
-        <label htmlFor="password">Contraseña</label>
+        <label htmlFor="password" className="field-label">
+          Contraseña
+        </label>
         <input
           id="password"
           type="password"
@@ -55,6 +61,14 @@ export default function LoginPage() {
         <button type="submit" disabled={submitting}>
           {submitting ? "Ingresando…" : "Ingresar"}
         </button>
+
+        <Link to="/registro" className="small">
+          No tengo cuenta, quiero registrarme
+        </Link>
+
+        <p className="login-legal">
+          Ley N° 29783 · Reglamento D.S. N° 005-2012-TR
+        </p>
       </form>
     </div>
   );
