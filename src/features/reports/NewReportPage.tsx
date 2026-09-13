@@ -1,5 +1,5 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 import { areas, categories, experiments, reports } from "../../api/endpoints";
@@ -49,6 +49,7 @@ export default function NewReportPage() {
   const [borrador, setBorrador] = useState<Borrador>(BORRADOR_VACIO);
   const [paso, setPaso] = useState(1);
   const [vistaPrevia, setVistaPrevia] = useState<string | null>(null);
+  const fotoInputRef = useRef<HTMLInputElement>(null);
 
   const variante = useQuery({
     queryKey: ["my-variant"],
@@ -95,6 +96,18 @@ export default function NewReportPage() {
       return archivo ? URL.createObjectURL(archivo) : null;
     });
     set("photo", archivo);
+  }
+
+  /**
+   * Quita la foto elegida.
+   *
+   * Limpiar el estado de React no basta: el <input type="file"> guarda su propio valor y
+   * el navegador seguiría mostrando el nombre del archivo al costado del botón. Hay que
+   * vaciarlo a mano, y así además se puede volver a elegir la misma foto.
+   */
+  function quitarFoto() {
+    if (fotoInputRef.current) fotoInputRef.current.value = "";
+    elegirFoto(null);
   }
 
   useEffect(() => {
@@ -189,12 +202,15 @@ export default function NewReportPage() {
             </Field>
             <Field label="Evidencia fotográfica">
               <input
+                ref={fotoInputRef}
                 type="file"
                 accept="image/*"
                 onChange={(e) => elegirFoto(e.target.files?.[0] ?? null)}
               />
-              <VistaPreviaFoto url={vistaPrevia} archivo={borrador.photo} onQuitar={() => elegirFoto(null)} />
             </Field>
+            {/* Fuera del <Field>: ese componente es un <label>, y cualquier clic dentro
+                de un label abre el selector de archivos. */}
+            <VistaPreviaFoto url={vistaPrevia} archivo={borrador.photo} onQuitar={quitarFoto} />
             <Field label="Ubicación">
               <button type="button" className="secondary" onClick={ubicar}>
                 {borrador.latitude ? "Ubicación capturada" : "Capturar mi ubicación"}
@@ -267,6 +283,7 @@ export default function NewReportPage() {
                 <h2>Evidencia y gravedad</h2>
                 <Field label="Foto" hint="Es lo que permite al comité entender el peligro sin ir al lugar.">
                   <input
+                    ref={fotoInputRef}
                     type="file"
                     accept="image/*"
                     onChange={(e) => {
@@ -274,8 +291,8 @@ export default function NewReportPage() {
                       ubicar();
                     }}
                   />
-                  <VistaPreviaFoto url={vistaPrevia} archivo={borrador.photo} onQuitar={() => elegirFoto(null)} />
                 </Field>
+                <VistaPreviaFoto url={vistaPrevia} archivo={borrador.photo} onQuitar={quitarFoto} />
                 <Field label="Área">
                   <Select value={borrador.area} onChange={(v) => set("area", v)} options={opcionesAreas} />
                 </Field>

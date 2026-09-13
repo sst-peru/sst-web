@@ -626,6 +626,9 @@ img.ampliable:focus-visible { outline: none; border-color: var(--navy-700); box-
 
 .foto-previa-datos button.link { align-self: flex-start; padding-left: 0; }
 
+/* La vista previa va fuera del campo, así que dentro de la rejilla ocupa la fila entera. */
+.form-grid > .foto-previa { grid-column: 1 / -1; }
+
 /* Filas de checklist: la fila entera es el objetivo, no solo la casilla de 17px. */
 .checklist li {
   border: 1px solid var(--gray-200);
