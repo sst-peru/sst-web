@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { createPortal } from "react-dom";
 
 /**
  * Imagen que se abre en grande al tocarla.
@@ -42,7 +43,12 @@ export function FotoAmpliable({
         src={src}
         alt={alt}
         className={className ? `${className} ampliable` : "ampliable"}
-        onClick={() => setAbierta(true)}
+        onClick={(evento) => {
+          // Si la imagen está dentro de un <label>, el clic se reenviaría al input
+          // asociado y abriría el explorador de archivos en vez de ampliar.
+          evento.preventDefault();
+          setAbierta(true);
+        }}
         onKeyDown={(evento) => {
           if (evento.key === "Enter" || evento.key === " ") {
             evento.preventDefault();
@@ -54,20 +60,29 @@ export function FotoAmpliable({
         title="Tocar para ampliar"
       />
 
-      {abierta && (
-        <div className="visor-foto" onClick={() => setAbierta(false)}>
-          <button
-            type="button"
-            className="visor-cerrar"
-            onClick={() => setAbierta(false)}
-            aria-label="Cerrar la vista ampliada"
-          >
-            Cerrar
-          </button>
-          <img src={src} alt={alt} onClick={(evento) => evento.stopPropagation()} />
-          <p className="visor-pie">Toca fuera de la imagen o presiona Escape para cerrar</p>
-        </div>
-      )}
+      {/*
+        El visor se monta en <body> con un portal, no aquí dentro.
+
+        Si se dibuja donde está la miniatura, hereda los estilos del contenedor —la regla
+        que fija la miniatura en 84 px le ganaba a la del visor y la foto "grande" salía
+        diminuta— y además queda atrapado en el contexto de apilamiento del formulario.
+      */}
+      {abierta &&
+        createPortal(
+          <div className="visor-foto" onClick={() => setAbierta(false)}>
+            <button
+              type="button"
+              className="visor-cerrar"
+              onClick={() => setAbierta(false)}
+              aria-label="Cerrar la vista ampliada"
+            >
+              Cerrar
+            </button>
+            <img src={src} alt={alt} onClick={(evento) => evento.stopPropagation()} />
+            <p className="visor-pie">Toca fuera de la imagen o presiona Escape para cerrar</p>
+          </div>,
+          document.body,
+        )}
     </>
   );
 }
