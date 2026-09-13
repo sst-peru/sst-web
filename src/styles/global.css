@@ -85,6 +85,16 @@ h1, h2, h3 { font-family: var(--serif); font-weight: 600; letter-spacing: -0.01e
   display: flex;
   flex-direction: column;
   border-right: 1px solid var(--navy-900);
+
+  /* Fija: la barra se queda en su sitio aunque el contenido sea largo.
+     align-self evita que flex la estire a la altura total del documento, que es lo
+     que dejaría sin efecto al position: sticky. */
+  position: sticky;
+  top: 0;
+  align-self: flex-start;
+  height: 100vh;
+  overflow-y: auto;
+  z-index: 10;
 }
 
 .brand {
@@ -110,7 +120,7 @@ h1, h2, h3 { font-family: var(--serif); font-weight: 600; letter-spacing: -0.01e
   line-height: 1.4;
 }
 
-.sidebar nav { display: flex; flex-direction: column; padding: 10px 0; }
+.sidebar nav { display: flex; flex-direction: column; padding: 10px 0; overflow-y: auto; }
 
 .sidebar nav a {
   padding: 9px 20px;
@@ -534,7 +544,13 @@ hr { border: none; border-top: 1px solid var(--gray-100); margin: 18px 0; }
 
 @media (max-width: 980px) {
   .app-shell { flex-direction: column; }
-  .sidebar { width: 100%; }
+  .sidebar {
+    width: 100%;
+    height: auto;
+    align-self: stretch;
+    overflow-y: visible;
+  }
+  .sidebar nav { overflow-y: visible; }
   .brand { padding: 14px 16px; }
   .sidebar nav { flex-direction: row; overflow-x: auto; padding: 0; }
   .sidebar nav a { white-space: nowrap; border-left: none; border-bottom: 3px solid transparent; }
