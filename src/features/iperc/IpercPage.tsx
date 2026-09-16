@@ -44,9 +44,13 @@ export default function IpercPage() {
   const [abierto, setAbierto] = useState(false);
   const [editando, setEditando] = useState<IpercEntry | null>(null);
   const [fila, setFila] = useState({ ...FILA_VACIA });
+  const [versionElegida, setVersionElegida] = useState<string>("");
 
   const matrices = useQuery({ queryKey: ["iperc-matrices"], queryFn: iperc.matrices });
-  const entradas = useQuery({ queryKey: ["iperc-entries"], queryFn: () => iperc.entries() });
+  const entradas = useQuery({
+    queryKey: ["iperc-entries", versionElegida],
+    queryFn: () => iperc.entries(versionElegida ? { matrix: versionElegida } : undefined),
+  });
   const listaAreas = useQuery({ queryKey: ["areas"], queryFn: areas.list });
   const listaUsuarios = useQuery({
     queryKey: ["users"],
@@ -54,7 +58,11 @@ export default function IpercPage() {
     enabled: canManage,
   });
 
+  // La matriz sobre la que se trabaja: la elegida en el selector o, por defecto, la vigente.
   const vigente = matrices.data?.find((m) => m.status === "VIGENTE") ?? matrices.data?.[0] ?? null;
+  const actual =
+    matrices.data?.find((m) => String(m.id) === versionElegida) ?? vigente;
+  const esHistorica = actual?.status === "HISTORICA";
 
   const invalidar = () => {
     queryClient.invalidateQueries({ queryKey: ["iperc-entries"] });
@@ -70,10 +78,47 @@ export default function IpercPage() {
     onSuccess: invalidar,
   });
 
+  /**
+   * Crea una versión nueva de la matriz.
+   *
+   * Nace en BORRADOR: una matriz no debería regir la operación hasta que el comité la
+   * apruebe. El número de versión lo asigna el servidor de forma correlativa.
+   */
+  const nuevaVersion = useMutation({
+    mutationFn: () => iperc.createMatrix({ status: "BORRADOR" }),
+    onSuccess: (matriz) => {
+      invalidar();
+      setVersionElegida(String(matriz.id));
+    },
+  });
+
+  /**
+   * Pone vigente la versión seleccionada y archiva la anterior.
+   *
+   * Solo puede haber una matriz vigente a la vez: si quedaran dos, no se sabría cuál
+   * rige, que es justo lo que una auditoría pregunta.
+   */
+  const ponerVigente = useMutation({
+    mutationFn: async () => {
+      if (!actual) return;
+      const anterior = matrices.data?.find(
+        (m) => m.status === "VIGENTE" && m.id !== actual.id,
+      );
+      if (anterior) {
+        await iperc.updateMatrix(anterior.id, { status: "HISTORICA" });
+      }
+      return iperc.updateMatrix(actual.id, {
+        status: "VIGENTE",
+        valid_from: new Date().toISOString().slice(0, 10),
+      });
+    },
+    onSuccess: invalidar,
+  });
+
   const guardar = useMutation({
     mutationFn: () => {
       const cuerpo = {
-        matrix: vigente?.id,
+        matrix: actual?.id,
         area: Number(fila.area),
         job_position: fila.job_position,
         hazard: fila.hazard,
@@ -135,20 +180,57 @@ export default function IpercPage() {
         <div>
           <h1>Matriz IPERC</h1>
           <p className="muted">
-            {vigente
-              ? `Versión ${vigente.version} · ${vigente.status.toLowerCase()} · ${entradas.data?.length ?? 0} peligros identificados`
+            {actual
+              ? `Versión ${actual.version} · ${actual.status.toLowerCase()} · ${entradas.data?.length ?? 0} peligros identificados`
               : "Todavía no hay una matriz registrada."}
           </p>
         </div>
         {canManage && (
           <div className="actions">
+            {(matrices.data?.length ?? 0) > 0 && (
+              <label className="selector-version">
+                <span className="field-label">Versión</span>
+                <select
+                  value={versionElegida || String(actual?.id ?? "")}
+                  onChange={(e) => setVersionElegida(e.target.value)}
+                >
+                  {matrices.data?.map((m) => (
+                    <option key={m.id} value={m.id}>
+                      v{m.version} — {m.status.toLowerCase()}
+                    </option>
+                  ))}
+                </select>
+              </label>
+            )}
             <button type="button" className="secondary" onClick={() => exportar("iperc")}>
               Exportar a Excel
             </button>
-            {vigente ? (
-              <button type="button" onClick={abrirNueva}>
-                Agregar peligro
-              </button>
+            {actual ? (
+              <>
+                <button
+                  type="button"
+                  className="secondary"
+                  onClick={() => nuevaVersion.mutate()}
+                  disabled={nuevaVersion.isPending}
+                >
+                  Nueva versión
+                </button>
+                {actual.status !== "VIGENTE" && (
+                  <button
+                    type="button"
+                    className="secondary"
+                    onClick={() => ponerVigente.mutate()}
+                    disabled={ponerVigente.isPending}
+                  >
+                    Poner vigente
+                  </button>
+                )}
+                {!esHistorica && (
+                  <button type="button" onClick={abrirNueva}>
+                    Agregar peligro
+                  </button>
+                )}
+              </>
             ) : (
               <button type="button" onClick={() => crearMatriz.mutate()}>
                 Crear matriz v1
@@ -158,7 +240,14 @@ export default function IpercPage() {
         )}
       </header>
 
-      <ErrorBox error={crearMatriz.error ?? eliminar.error} />
+      {esHistorica && (
+        <section className="card aviso">
+          Estás viendo una versión histórica de la matriz. Se conserva como evidencia para
+          auditorías y no admite cambios; para editar, selecciona la versión vigente.
+        </section>
+      )}
+
+      <ErrorBox error={crearMatriz.error ?? nuevaVersion.error ?? ponerVigente.error ?? eliminar.error} />
 
       <section className="card">
         <div className="table-scroll">
@@ -174,7 +263,7 @@ export default function IpercPage() {
                 <th>Nivel</th>
                 <th>Controles existentes</th>
                 <th>Origen</th>
-                {canManage && <th></th>}
+                {canManage && !esHistorica && <th></th>}
               </tr>
             </thead>
             <tbody>
@@ -199,7 +288,7 @@ export default function IpercPage() {
                       <span className="muted">Revisión manual</span>
                     )}
                   </td>
-                  {canManage && (
+                  {canManage && !esHistorica && (
                     <td className="nowrap">
                       <button type="button" className="link" onClick={() => abrirEdicion(entrada)}>
                         Editar
@@ -217,7 +306,7 @@ export default function IpercPage() {
               ))}
               {!entradas.data?.length && (
                 <tr>
-                  <td colSpan={canManage ? 10 : 9} className="muted">
+                  <td colSpan={canManage && !esHistorica ? 10 : 9} className="muted">
                     La matriz está vacía. Los peligros que más se repiten en los reportes son
                     buenos candidatos para la primera versión.
                   </td>

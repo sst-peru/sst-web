@@ -51,6 +51,16 @@ export default function NewReportPage() {
   const [vistaPrevia, setVistaPrevia] = useState<string | null>(null);
   const fotoInputRef = useRef<HTMLInputElement>(null);
 
+  /**
+   * Identificador del reporte generado en el cliente, antes de enviarlo.
+   *
+   * El API es idempotente por este campo: si la petición se reintenta —doble clic en
+   * "Enviar", conexión lenta, o el usuario que insiste— reconoce el uuid y devuelve el
+   * reporte existente en vez de crear otro. Sin esto, la web podía duplicar hallazgos y
+   * distorsionar las métricas.
+   */
+  const clientUuid = useRef(crearUuid());
+
   const variante = useQuery({
     queryKey: ["my-variant"],
     queryFn: () => experiments.myVariant(),
@@ -66,6 +76,7 @@ export default function NewReportPage() {
     mutationFn: () => {
       // FormData porque va una foto: el API acepta multipart igual que desde el celular.
       const datos = new FormData();
+      datos.append("client_uuid", clientUuid.current);
       datos.append("kind", borrador.kind);
       datos.append("severity", borrador.severity);
       datos.append("description", borrador.description);
@@ -79,6 +90,7 @@ export default function NewReportPage() {
       return reports.create(datos);
     },
     onSuccess: (reporte) => {
+      clientUuid.current = crearUuid();
       queryClient.invalidateQueries({ queryKey: ["reports"] });
       navigate(`/reportes/${reporte.id}`);
     },
@@ -374,4 +386,21 @@ function VistaPreviaFoto({
       </div>
     </div>
   );
+}
+
+/**
+ * Genera un UUID v4.
+ *
+ * `crypto.randomUUID` solo está disponible en contextos seguros (HTTPS o localhost); en una
+ * red interna por HTTP no existe, así que hay un respaldo para no romper el reporte ahí.
+ */
+function crearUuid(): string {
+  if (typeof crypto !== "undefined" && "randomUUID" in crypto) {
+    return crypto.randomUUID();
+  }
+  return "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(/[xy]/g, (caracter) => {
+    const aleatorio = (Math.random() * 16) | 0;
+    const valor = caracter === "x" ? aleatorio : (aleatorio & 0x3) | 0x8;
+    return valor.toString(16);
+  });
 }

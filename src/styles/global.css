@@ -854,3 +854,16 @@ hr { border: none; border-top: 1px solid var(--gray-100); margin: 18px 0; }
   dl { grid-template-columns: 1fr; }
   dt { border-bottom: none; padding-bottom: 0; }
 }
+
+/* Selector de versión de la matriz IPERC, dentro de la barra de acciones. */
+.selector-version {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 150px;
+  border: none;
+  padding: 0;
+  cursor: default;
+}
+
+.selector-version:hover { background: none; }
