@@ -1,0 +1,359 @@
+/* ==========================================================================
+   RESGUARDO — Landing page pública.
+   Usa los mismos tokens de global.css: azul institucional, gris, blanco.
+   Todo va prefijado con .landing para no alterar el panel autenticado.
+   ========================================================================== */
+
+.landing {
+  background: var(--white);
+  color: var(--text);
+}
+
+.landing-wrap {
+  width: 100%;
+  max-width: 1120px;
+  margin: 0 auto;
+  padding: 0 24px;
+}
+
+/* --- Barra de navegación ------------------------------------------------- */
+
+.landing-nav {
+  position: sticky;
+  top: 0;
+  z-index: 20;
+  background: var(--white);
+  border-bottom: 1px solid var(--border);
+}
+
+.landing-nav-inner {
+  max-width: 1120px;
+  margin: 0 auto;
+  padding: 0 24px;
+  height: 60px;
+  display: flex;
+  align-items: center;
+  gap: 24px;
+}
+
+.landing-brand { display: flex; flex-direction: column; line-height: 1.15; }
+
+.landing-brand-name {
+  font-family: var(--serif);
+  font-size: 19px;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  color: var(--navy-800);
+}
+
+.landing-brand-tag {
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--muted);
+}
+
+.landing-links { margin-left: auto; display: flex; gap: 22px; }
+
+.landing-links a {
+  font-size: 13px;
+  color: var(--gray-700);
+  text-decoration: none;
+  padding: 4px 0;
+  border-bottom: 2px solid transparent;
+}
+
+.landing-links a:hover { color: var(--navy-700); border-bottom-color: var(--blue-500); }
+
+/* --- Botones ------------------------------------------------------------- */
+
+.landing-btn {
+  display: inline-block;
+  padding: 10px 18px;
+  border-radius: var(--radius);
+  font-size: 13px;
+  font-weight: 600;
+  text-decoration: none;
+  border: 1px solid transparent;
+  cursor: pointer;
+}
+
+.landing-btn:hover { text-decoration: none; }
+
+.landing-btn-primary { background: var(--navy-700); color: var(--white); }
+.landing-btn-primary:hover { background: var(--navy-800); }
+
+.landing-btn-outline { border-color: var(--navy-700); color: var(--navy-700); background: transparent; }
+.landing-btn-outline:hover { background: var(--blue-050); }
+
+.landing-btn-ghost {
+  border-color: var(--border);
+  color: var(--navy-800);
+  padding: 8px 16px;
+  white-space: nowrap;
+}
+.landing-btn-ghost:hover { background: var(--gray-050); }
+
+/* --- Hero ---------------------------------------------------------------- */
+
+.landing-hero {
+  background: linear-gradient(0deg, var(--gray-050), var(--white));
+  border-bottom: 1px solid var(--border);
+  padding: 64px 0 72px;
+}
+
+.landing-hero-grid {
+  display: grid;
+  grid-template-columns: 1.15fr 0.85fr;
+  gap: 48px;
+  align-items: start;
+}
+
+.landing-eyebrow {
+  margin: 0 0 14px;
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.09em;
+  color: var(--navy-600);
+  font-weight: 600;
+}
+
+.landing-hero h1 {
+  margin: 0 0 18px;
+  font-family: var(--serif);
+  font-size: 40px;
+  line-height: 1.16;
+  color: var(--navy-900);
+}
+
+.landing-lead { margin: 0 0 26px; font-size: 16px; line-height: 1.65; color: var(--gray-700); }
+
+.landing-cta { display: flex; gap: 12px; flex-wrap: wrap; }
+
+.landing-note { margin: 20px 0 0; font-size: 12.5px; color: var(--muted); }
+
+/* --- Panel del recorrido ------------------------------------------------- */
+
+.landing-panel {
+  background: var(--white);
+  border: 1px solid var(--border);
+  border-top: 3px solid var(--navy-700);
+  border-radius: var(--radius);
+  padding: 22px 22px 8px;
+}
+
+.landing-panel-title {
+  margin: 0 0 16px;
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--muted);
+  font-weight: 600;
+}
+
+.landing-steps { list-style: none; margin: 0; padding: 0; }
+
+.landing-steps li { display: flex; gap: 14px; padding-bottom: 18px; position: relative; }
+
+.landing-steps li::before {
+  content: "";
+  position: absolute;
+  left: 13px;
+  top: 28px;
+  bottom: 0;
+  width: 1px;
+  background: var(--gray-200);
+}
+
+.landing-steps li:last-child::before { display: none; }
+
+.landing-steps span {
+  flex: 0 0 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: var(--blue-100);
+  color: var(--navy-800);
+  font-size: 12px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  z-index: 1;
+}
+
+.landing-steps strong { display: block; font-size: 13.5px; color: var(--navy-900); }
+.landing-steps p { margin: 3px 0 0; font-size: 13px; color: var(--gray-700); line-height: 1.5; }
+
+/* --- Secciones ----------------------------------------------------------- */
+
+.landing-section { padding: 68px 0; }
+.landing-section-alt { background: var(--gray-050); border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); }
+
+.landing-section h2 {
+  margin: 0 0 12px;
+  font-family: var(--serif);
+  font-size: 28px;
+  color: var(--navy-900);
+}
+
+.landing-section-lead {
+  margin: 0 0 34px;
+  max-width: 720px;
+  font-size: 15px;
+  line-height: 1.65;
+  color: var(--gray-700);
+}
+
+/* --- Cifra oficial ------------------------------------------------------- */
+
+.landing-figure {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  margin: 0 0 34px;
+  padding: 18px 22px;
+  background: var(--white);
+  border: 1px solid var(--border);
+  border-left: 3px solid var(--danger-700);
+  border-radius: var(--radius);
+  max-width: 560px;
+}
+
+.landing-figure strong { font-family: var(--serif); font-size: 32px; color: var(--navy-900); }
+.landing-figure span { font-size: 14px; color: var(--gray-700); }
+.landing-figure small { font-size: 11.5px; color: var(--muted); }
+
+/* --- Tarjetas ------------------------------------------------------------ */
+
+.landing-cards { display: grid; gap: 18px; }
+.landing-cards-3 { grid-template-columns: repeat(3, 1fr); }
+
+.landing-card {
+  background: var(--white);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 22px;
+}
+
+.landing-card h3 {
+  margin: 0 0 10px;
+  font-family: var(--sans);
+  font-size: 14.5px;
+  font-weight: 700;
+  color: var(--navy-800);
+}
+
+.landing-card p { margin: 0; font-size: 13.5px; line-height: 1.6; color: var(--gray-700); }
+
+/* --- Tabla de cumplimiento ----------------------------------------------- */
+
+.landing-table-wrap { overflow-x: auto; border: 1px solid var(--border); border-radius: var(--radius); background: var(--white); }
+
+.landing-table { width: 100%; border-collapse: collapse; font-size: 13.5px; }
+
+.landing-table th {
+  text-align: left;
+  background: var(--gray-100);
+  color: var(--gray-700);
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  padding: 11px 16px;
+  border-bottom: 1px solid var(--border);
+  white-space: nowrap;
+}
+
+.landing-table td { padding: 13px 16px; border-bottom: 1px solid var(--gray-100); vertical-align: top; color: var(--gray-700); }
+.landing-table tr:last-child td { border-bottom: none; }
+.landing-norm { color: var(--navy-700); font-weight: 600; white-space: nowrap; }
+
+/* --- Planes -------------------------------------------------------------- */
+
+.landing-plan { display: flex; flex-direction: column; }
+.landing-plan.destacado { border-top: 3px solid var(--navy-700); }
+
+.landing-plan h3 { font-family: var(--serif); font-size: 19px; font-weight: 600; margin-bottom: 4px; }
+.landing-plan-para { margin: 0 0 16px; font-size: 12.5px; color: var(--muted); }
+
+.landing-plan ul { list-style: none; margin: 0 0 22px; padding: 0; flex: 1; }
+
+.landing-plan li {
+  position: relative;
+  padding: 0 0 9px 18px;
+  font-size: 13.5px;
+  line-height: 1.55;
+  color: var(--gray-700);
+}
+
+.landing-plan li::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 8px;
+  width: 6px;
+  height: 6px;
+  background: var(--blue-500);
+  border-radius: 1px;
+}
+
+.landing-plan .landing-btn { align-self: flex-start; }
+
+/* --- Contacto ------------------------------------------------------------ */
+
+.landing-section-dark { background: var(--navy-800); border: none; }
+.landing-section-dark h2 { color: var(--white); }
+.landing-section-dark p { color: #c6d4e2; font-size: 15px; line-height: 1.65; max-width: 480px; }
+
+.landing-contact { display: grid; grid-template-columns: 1.1fr 0.9fr; gap: 48px; align-items: center; }
+
+.landing-contact-box {
+  background: var(--white);
+  border-radius: var(--radius);
+  padding: 26px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  align-items: flex-start;
+}
+
+.landing-contact-label {
+  margin: 0;
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--muted) !important;
+  font-weight: 600;
+}
+
+.landing-contact-mail { font-family: var(--serif); font-size: 21px; color: var(--navy-800); }
+.landing-contact-note { margin: 4px 0 0; font-size: 12.5px; color: var(--muted) !important; }
+
+/* --- Pie ----------------------------------------------------------------- */
+
+.landing-foot { background: var(--navy-900); padding: 22px 0; }
+
+.landing-foot-inner {
+  display: flex;
+  justify-content: space-between;
+  gap: 18px;
+  flex-wrap: wrap;
+  font-size: 12px;
+  color: #9fb2c6;
+}
+
+/* --- Adaptación a pantallas pequeñas ------------------------------------- */
+
+@media (max-width: 980px) {
+  .landing-hero-grid, .landing-contact { grid-template-columns: 1fr; gap: 32px; }
+  .landing-cards-3 { grid-template-columns: repeat(2, 1fr); }
+  .landing-hero h1 { font-size: 32px; }
+  .landing-links { display: none; }
+}
+
+@media (max-width: 680px) {
+  .landing-cards-3 { grid-template-columns: 1fr; }
+  .landing-hero { padding: 44px 0 52px; }
+  .landing-section { padding: 48px 0; }
+  .landing-hero h1 { font-size: 27px; }
+}
