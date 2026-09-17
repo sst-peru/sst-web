@@ -66,10 +66,6 @@ export default function LoginPage() {
           No tengo cuenta, quiero registrarme
         </Link>
 
-        <Link to="/inicio" className="small">
-          Conocer el sistema
-        </Link>
-
         <p className="login-legal">
           Ley N° 29783 · Reglamento D.S. N° 005-2012-TR
         </p>

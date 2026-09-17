@@ -10,7 +10,6 @@ import DashboardPage from "./features/dashboard/DashboardPage";
 import ExperimentPage from "./features/dashboard/ExperimentPage";
 import EppPage from "./features/epp/EppPage";
 import InspectionsPage from "./features/inspections/InspectionsPage";
-import LandingPage from "./features/landing/LandingPage";
 import IpercPage from "./features/iperc/IpercPage";
 import NewReportPage from "./features/reports/NewReportPage";
 import ReportDetailPage from "./features/reports/ReportDetailPage";
@@ -33,7 +32,6 @@ function Inicio() {
 export default function App() {
   return (
     <Routes>
-      <Route path="/inicio" element={<LandingPage />} />
       <Route path="/login" element={<LoginPage />} />
       <Route path="/registro" element={<RegisterPage />} />
       <Route
