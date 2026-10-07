@@ -20,6 +20,21 @@ export interface User {
   area_name?: string | null;
 }
 
+export interface Company {
+  id: number;
+  name: string;
+  ruc: string;
+  address: string;
+  worker_count: number;
+  /** true cuando la empresa tiene 20 trabajadores o mas y la ley le exige comite. */
+  requires_committee: boolean;
+}
+
+export interface CompanyRegistration {
+  user: User;
+  company: Company;
+}
+
 export interface Area {
   id: number;
   name: string;

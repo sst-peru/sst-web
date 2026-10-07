@@ -51,7 +51,7 @@ export default function RegisterPage() {
       >
         <h1>Resguardo</h1>
         <p className="muted small">
-          Registro de trabajadores · Sistema de Gestión de SST
+          Registro de trabajador · Sistema de Gestión de SST
         </p>
 
         <div className="form-grid">
@@ -109,8 +109,8 @@ export default function RegisterPage() {
           Las cuentas nuevas entran como <strong>operario</strong>. Si eres supervisor o miembro
           del comité, pide que te creen la cuenta desde el panel.
         </p>
-        <Link to="/login" className="small">
-          Ya tengo cuenta
+        <Link to="/registro" className="small">
+          Volver
         </Link>
 
         <p className="login-legal">Ley N° 29783 · Reglamento D.S. N° 005-2012-TR</p>

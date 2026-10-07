@@ -4,6 +4,8 @@ import Layout from "./components/Layout";
 import ProtectedRoute from "./components/ProtectedRoute";
 import { useAuth } from "./features/auth/AuthContext";
 import LoginPage from "./features/auth/LoginPage";
+import RegisterChoicePage from "./features/auth/RegisterChoicePage";
+import RegisterCompanyPage from "./features/auth/RegisterCompanyPage";
 import RegisterPage from "./features/auth/RegisterPage";
 import CommitteePage from "./features/committee/CommitteePage";
 import DashboardPage from "./features/dashboard/DashboardPage";
@@ -33,7 +35,9 @@ export default function App() {
   return (
     <Routes>
       <Route path="/login" element={<LoginPage />} />
-      <Route path="/registro" element={<RegisterPage />} />
+      <Route path="/registro" element={<RegisterChoicePage />} />
+      <Route path="/registro/empresa" element={<RegisterCompanyPage />} />
+      <Route path="/registro/trabajador" element={<RegisterPage />} />
       <Route
         element={
           <ProtectedRoute>

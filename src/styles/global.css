@@ -867,3 +867,49 @@ hr { border: none; border-top: 1px solid var(--gray-100); margin: 18px 0; }
 }
 
 .selector-version:hover { background: none; }
+
+/* --- Bifurcacion del registro: empresa o trabajador --- */
+.choice-card { width: 620px; max-width: 100%; border-top: 3px solid var(--navy-700); }
+
+.choice-card h1 {
+  font-size: 21px;
+  margin: 0 0 2px;
+  color: var(--navy-900);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.choice-title { font-size: 15px; margin: 20px 0 12px; color: var(--gray-700); }
+
+.choice-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+
+.choice-option {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 16px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--blue-050);
+  color: var(--text);
+  text-decoration: none;
+  transition: border-color 120ms, background 120ms;
+}
+.choice-option:hover { border-color: var(--navy-600); background: var(--blue-100); }
+.choice-option:focus-visible { outline: 2px solid var(--navy-600); outline-offset: 2px; }
+.choice-option strong { color: var(--navy-900); font-size: 14px; }
+
+.choice-tag {
+  align-self: flex-start;
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--navy-700);
+  border: 1px solid var(--navy-600);
+  border-radius: 2px;
+  padding: 1px 6px;
+}
+
+@media (max-width: 620px) {
+  .choice-grid { grid-template-columns: 1fr; }
+}

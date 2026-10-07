@@ -5,6 +5,7 @@ import type {
   Assignment,
   Category,
   Committee,
+  CompanyRegistration,
   CommitteeCompliance,
   CommitteeMember,
   ComplianceMetrics,
@@ -36,6 +37,9 @@ export const auth = {
       .then((r) => r.data),
   register: (payload: Record<string, unknown>) =>
     api.post<User>("/auth/register/", payload).then((r) => r.data),
+  /** Crea la empresa y la cuenta de su administrador. Camino aparte del registro de trabajador. */
+  registerCompany: (payload: Record<string, unknown>) =>
+    api.post<CompanyRegistration>("/auth/register-company/", payload).then((r) => r.data),
   me: () => api.get<User>("/auth/me/").then((r) => r.data),
 };
 
