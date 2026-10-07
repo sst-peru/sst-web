@@ -7,3 +7,6 @@ dist-ssr/
 .DS_Store
 .vscode/
 .idea/
+
+# Cache de tsc, lo genera el typecheck
+*.tsbuildinfo
