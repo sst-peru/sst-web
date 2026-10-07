@@ -7,6 +7,7 @@ import LoginPage from "./features/auth/LoginPage";
 import RegisterChoicePage from "./features/auth/RegisterChoicePage";
 import RegisterCompanyPage from "./features/auth/RegisterCompanyPage";
 import RegisterPage from "./features/auth/RegisterPage";
+import AccidentsPage from "./features/accidents/AccidentsPage";
 import CommitteePage from "./features/committee/CommitteePage";
 import DashboardPage from "./features/dashboard/DashboardPage";
 import ExperimentPage from "./features/dashboard/ExperimentPage";
@@ -49,6 +50,7 @@ export default function App() {
         <Route path="/reportes" element={<ReportsPage />} />
         <Route path="/reportes/nuevo" element={<NewReportPage />} />
         <Route path="/reportes/:id" element={<ReportDetailPage />} />
+        <Route path="/accidentes" element={<AccidentsPage />} />
         <Route path="/iperc" element={<IpercPage />} />
         <Route path="/inspecciones" element={<InspectionsPage />} />
         <Route path="/epp" element={<EppPage />} />

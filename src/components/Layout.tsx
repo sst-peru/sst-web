@@ -17,6 +17,7 @@ const NAV: { to: string; label: string; managerOnly?: boolean; end?: boolean }[]
   { to: "/", label: "Tablero", managerOnly: true, end: true },
   { to: "/reportes/nuevo", label: "Reportar" },
   { to: "/reportes", label: "Reportes", end: true },
+  { to: "/accidentes", label: "Accidentes e incidentes" },
   { to: "/iperc", label: "Matriz IPERC" },
   { to: "/inspecciones", label: "Inspecciones" },
   { to: "/epp", label: "Equipos de protección" },

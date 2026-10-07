@@ -1,11 +1,14 @@
 import { api } from "./client";
 import type {
+  Accident,
+  AccidentRates,
   Agreement,
   Area,
   Assignment,
   Category,
   Committee,
   Company,
+  CorrectiveMeasure,
   CompanyRegistration,
   CommitteeCompliance,
   CommitteeMember,
@@ -19,6 +22,7 @@ import type {
   IpercMatrix,
   Meeting,
   MttrMetrics,
+  OccupationalDisease,
   Paginated,
   Report,
   User,
@@ -57,6 +61,37 @@ export const users = {
     api.post<User>("/auth/users/", payload).then((r) => r.data),
   update: (id: number, payload: Record<string, unknown>) =>
     api.patch<User>(`/auth/users/${id}/`, payload).then((r) => r.data),
+};
+
+export const accidents = {
+  list: (params?: object) => results<Accident>("/accidents/", params),
+  detail: (id: number) => api.get<Accident>(`/accidents/${id}/`).then((r) => r.data),
+  create: (payload: Record<string, unknown>) =>
+    api.post<Accident>("/accidents/", payload).then((r) => r.data),
+  /** Registra la investigacion de causa raiz y pasa el accidente a «en investigacion». */
+  investigate: (id: number, payload: Record<string, unknown>) =>
+    api.post<Accident>(`/accidents/${id}/investigate/`, payload).then((r) => r.data),
+  /** Deja constancia del aviso al MTPE dentro del plazo de 24 horas del articulo 82. */
+  notifyMtpe: (id: number, payload: Record<string, unknown>) =>
+    api.post<Accident>(`/accidents/${id}/notify-mtpe/`, payload).then((r) => r.data),
+  close: (id: number) => api.post<Accident>(`/accidents/${id}/close/`).then((r) => r.data),
+  rates: (params?: object) =>
+    api.get<AccidentRates>("/metrics/accident-rates/", { params }).then((r) => r.data),
+};
+
+export const measures = {
+  create: (payload: Record<string, unknown>) =>
+    api.post<CorrectiveMeasure>("/corrective-measures/", payload).then((r) => r.data),
+  complete: (id: number) =>
+    api.post<CorrectiveMeasure>(`/corrective-measures/${id}/complete/`).then((r) => r.data),
+  verify: (id: number) =>
+    api.post<CorrectiveMeasure>(`/corrective-measures/${id}/verify/`).then((r) => r.data),
+};
+
+export const diseases = {
+  list: () => results<OccupationalDisease>("/occupational-diseases/"),
+  create: (payload: Record<string, unknown>) =>
+    api.post<OccupationalDisease>("/occupational-diseases/", payload).then((r) => r.data),
 };
 
 export const areas = {

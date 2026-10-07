@@ -913,3 +913,20 @@ hr { border: none; border-top: 1px solid var(--gray-100); margin: 18px 0; }
 @media (max-width: 620px) {
   .choice-grid { grid-template-columns: 1fr; }
 }
+
+/* --- Pildoras de estado y fila seleccionada (registro de accidentes) --- */
+.pildora {
+  display: inline-block;
+  font-size: 11px;
+  line-height: 1.6;
+  padding: 1px 7px;
+  border-radius: 2px;
+  border: 1px solid transparent;
+  white-space: nowrap;
+}
+.pildora.ok    { color: var(--ok-700);     background: var(--ok-050);     border-color: var(--ok-700); }
+.pildora.aviso { color: var(--warn-700);   background: var(--warn-050);   border-color: var(--warn-700); }
+.pildora.grave { color: var(--danger-700); background: var(--danger-050); border-color: var(--danger-700); }
+
+tbody tr.fila-activa { background: var(--blue-100); }
+tbody tr[onclick], tbody tr.fila-activa { cursor: pointer; }

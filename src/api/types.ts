@@ -90,6 +90,122 @@ export interface Report {
   actions: ReportAction[];
 }
 
+export type AccidentKind = "ACCIDENTE" | "INCIDENTE_PELIGROSO";
+export type AccidentSeverity = "LEVE" | "INCAPACITANTE" | "MORTAL";
+export type AccidentStatus = "REGISTRADO" | "EN_INVESTIGACION" | "CERRADO";
+export type ControlKind =
+  | "ELIMINACION"
+  | "SUSTITUCION"
+  | "INGENIERIA"
+  | "ADMINISTRATIVO"
+  | "EPP";
+export type MeasureStatus = "PENDIENTE" | "EN_PROCESO" | "IMPLEMENTADA" | "VERIFICADA";
+export type DiseaseStatus = "SOSPECHA" | "CONFIRMADA" | "DESCARTADA";
+
+export interface Investigation {
+  id: number;
+  method: string;
+  method_display: string;
+  immediate_causes: string;
+  basic_causes: string;
+  root_cause: string;
+  conclusions: string;
+  participants: string;
+  performed_by: number;
+  performed_by_name: string;
+  performed_at: string;
+}
+
+export interface CorrectiveMeasure {
+  id: number;
+  accident: number;
+  description: string;
+  control_kind: ControlKind;
+  control_kind_display: string;
+  responsible: number;
+  responsible_name: string;
+  due_date: string;
+  status: MeasureStatus;
+  status_display: string;
+  completed_at: string | null;
+  verified_by: number | null;
+  verified_at: string | null;
+  overdue: boolean;
+}
+
+export interface Accident {
+  id: number;
+  kind: AccidentKind;
+  kind_display: string;
+  severity: AccidentSeverity;
+  severity_display: string;
+  status: AccidentStatus;
+  status_display: string;
+  area: number | null;
+  area_name: string | null;
+  place: string;
+  description: string;
+  injury_description: string;
+  immediate_actions: string;
+  injured_person: number | null;
+  injured_name: string;
+  injured_dni: string;
+  injured_label: string;
+  lost_days: number;
+  origin_report: number | null;
+  reported_by: number;
+  reported_by_name: string;
+  occurred_at: string;
+  created_at: string;
+  closed_at: string | null;
+  mtpe_notified_at: string | null;
+  mtpe_notice_code: string;
+  /** Solo el accidente mortal y el incidente peligroso tienen el plazo de 24 horas. */
+  requires_immediate_notice: boolean;
+  notice_deadline: string | null;
+  notice_hours_left: number | null;
+  notice_overdue: boolean;
+  notified_late: boolean;
+  investigation: Investigation | null;
+  measures: CorrectiveMeasure[];
+}
+
+export interface OccupationalDisease {
+  id: number;
+  worker: number | null;
+  worker_name: string;
+  worker_label: string;
+  area: number | null;
+  area_name: string | null;
+  diagnosis: string;
+  cie10_code: string;
+  causal_agent: string;
+  exposure_months: number | null;
+  diagnosed_on: string;
+  status: DiseaseStatus;
+  status_display: string;
+  rest_days: number;
+  notes: string;
+  reported_by: number;
+}
+
+/** Indices de la R.M. N° 050-2013-TR. */
+export interface AccidentRates {
+  window_days: number;
+  accidents: number;
+  minor: number;
+  disabling: number;
+  fatal: number;
+  lost_days: number;
+  hours_worked: number;
+  hours_worked_estimated: boolean;
+  frequency_index: number | null;
+  severity_index: number | null;
+  accident_rate_index: number | null;
+  overdue_notices: number;
+  diseases: number;
+}
+
 export interface Paginated<T> {
   count: number;
   next: string | null;
