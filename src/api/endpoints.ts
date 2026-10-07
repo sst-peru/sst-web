@@ -24,6 +24,7 @@ import type {
   MttrMetrics,
   OccupationalDisease,
   Paginated,
+  PrivacyState,
   Report,
   User,
 } from "./types";
@@ -46,6 +47,22 @@ export const auth = {
   registerCompany: (payload: Record<string, unknown>) =>
     api.post<CompanyRegistration>("/auth/register-company/", payload).then((r) => r.data),
   me: () => api.get<User>("/auth/me/").then((r) => r.data),
+};
+
+export const privacy = {
+  state: () => api.get<PrivacyState>("/auth/privacy/").then((r) => r.data),
+  /** Enciende o apaga el envio de la ubicacion en los reportes. */
+  setLocationSharing: (location_sharing: boolean) =>
+    api.patch<PrivacyState>("/auth/privacy/", { location_sharing }).then((r) => r.data),
+  /** Otorga el consentimiento declarando la version de la politica que se leyo. */
+  accept: (accept_policy_version: string) =>
+    api
+      .post<PrivacyState>("/auth/privacy/consent/", {
+        accept_policy_version,
+        source: "WEB",
+      })
+      .then((r) => r.data),
+  revoke: () => api.delete<PrivacyState>("/auth/privacy/consent/").then((r) => r.data),
 };
 
 export const company = {

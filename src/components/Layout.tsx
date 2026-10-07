@@ -22,6 +22,7 @@ const NAV: { to: string; label: string; managerOnly?: boolean; end?: boolean }[]
   { to: "/inspecciones", label: "Inspecciones" },
   { to: "/epp", label: "Equipos de protección" },
   { to: "/comite", label: "Comité de SST" },
+  { to: "/privacidad", label: "Privacidad" },
   { to: "/experimento", label: "Experimento A/B", managerOnly: true },
   { to: "/usuarios", label: "Usuarios y áreas", managerOnly: true },
 ];

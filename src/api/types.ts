@@ -18,6 +18,10 @@ export interface User {
   company_name?: string;
   area: number | null;
   area_name?: string | null;
+  location_sharing: boolean;
+  /** Si es false, la web muestra la politica antes de dejar reportar. */
+  has_accepted_privacy_policy: boolean;
+  company_is_demo?: boolean;
 }
 
 export interface Company {
@@ -79,8 +83,10 @@ export interface Report {
   assigned_to: number | null;
   assigned_to_name: string | null;
   closure_note: string;
-  reported_by: number;
+  /** null cuando el reporte es anonimo y quien consulta no es su autor. */
+  reported_by: number | null;
   reported_by_name: string;
+  is_anonymous: boolean;
   occurred_at: string;
   created_at: string;
   closed_at: string | null;
@@ -240,9 +246,25 @@ export interface ExperimentResults {
     reports_per_user: number | null;
     reports_with_photo: number;
     mttr_hours: number | null;
+    reports_per_user_sd: number;
     daily: { day: string; total: number }[];
   }[];
-  lift_pct_first_vs_second: number | null;
+  /** Diferencia entre las dos primeras variantes con su intervalo al 95 %. */
+  comparison: {
+    variants: string[];
+    difference: number | null;
+    standard_error?: number;
+    confidence_level_pct?: number;
+    ci_low?: number;
+    ci_high?: number;
+    conclusive: boolean;
+    lift_pct?: number | null;
+    reading: string;
+  } | null;
+  /** true cuando la empresa es la que carga el comando seed_demo. */
+  demo_data: boolean;
+  sample_sufficient: boolean;
+  min_users_per_variant: number;
 }
 
 // ---------------------------------------------------------------------------
@@ -416,6 +438,22 @@ export interface CommitteeCompliance {
 // ---------------------------------------------------------------------------
 // Experimento A/B
 // ---------------------------------------------------------------------------
+
+export interface PrivacyConsentRecord {
+  id: number;
+  policy_version: string;
+  granted_at: string;
+  revoked_at: string | null;
+  source: "WEB" | "ANDROID";
+}
+
+export interface PrivacyState {
+  policy_version: string;
+  accepted: boolean;
+  granted_at: string | null;
+  location_sharing: boolean;
+  history: PrivacyConsentRecord[];
+}
 
 export interface Assignment {
   id: number;

@@ -14,6 +14,8 @@ import ExperimentPage from "./features/dashboard/ExperimentPage";
 import EppPage from "./features/epp/EppPage";
 import InspectionsPage from "./features/inspections/InspectionsPage";
 import IpercPage from "./features/iperc/IpercPage";
+import PrivacyGate from "./features/privacy/PrivacyGate";
+import PrivacyPage from "./features/privacy/PrivacyPage";
 import NewReportPage from "./features/reports/NewReportPage";
 import ReportDetailPage from "./features/reports/ReportDetailPage";
 import ReportsPage from "./features/reports/ReportsPage";
@@ -42,7 +44,9 @@ export default function App() {
       <Route
         element={
           <ProtectedRoute>
-            <Layout />
+            <PrivacyGate>
+              <Layout />
+            </PrivacyGate>
           </ProtectedRoute>
         }
       >
@@ -55,6 +59,7 @@ export default function App() {
         <Route path="/inspecciones" element={<InspectionsPage />} />
         <Route path="/epp" element={<EppPage />} />
         <Route path="/comite" element={<CommitteePage />} />
+        <Route path="/privacidad" element={<PrivacyPage />} />
         <Route
           path="/experimento"
           element={

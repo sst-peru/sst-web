@@ -10,6 +10,8 @@ interface AuthState {
   loading: boolean;
   login: (username: string, password: string) => Promise<void>;
   logout: () => void;
+  /** Vuelve a leer /auth/me. La usa la pantalla de privacidad al aceptar la politica. */
+  refreshUser: () => Promise<void>;
   canManage: boolean;
 }
 
@@ -37,6 +39,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     setUser(data.user);
   }, []);
 
+  const refreshUser = useCallback(async () => {
+    setUser(await auth.me());
+  }, []);
+
   const logout = useCallback(() => {
     tokens.clear();
     setUser(null);
@@ -48,9 +54,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       loading,
       login,
       logout,
+      refreshUser,
       canManage: !!user && ["SUPERVISOR", "COMITE", "ADMIN"].includes(user.role),
     }),
-    [user, loading, login, logout],
+    [user, loading, login, logout, refreshUser],
   );
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

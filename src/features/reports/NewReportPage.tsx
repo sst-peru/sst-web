@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 
 import { areas, categories, experiments, reports } from "../../api/endpoints";
 import { ErrorBox, Field, Select } from "../../components/Form";
+import { useAuth } from "../auth/AuthContext";
 import { FotoAmpliable } from "../../components/FotoAmpliable";
 import type { ReportKind, Severity } from "../../api/types";
 
@@ -15,6 +16,8 @@ const SEVERIDADES: { value: Severity; label: string }[] = [
 ];
 
 interface Borrador {
+  /** US116: el autor decide reportar sin que su identidad se muestre a nadie. */
+  is_anonymous: boolean;
   kind: ReportKind;
   category: string;
   area: string;
@@ -26,6 +29,7 @@ interface Borrador {
 }
 
 const BORRADOR_VACIO: Borrador = {
+  is_anonymous: false,
   kind: "CONDICION",
   category: "",
   area: "",
@@ -46,6 +50,7 @@ const BORRADOR_VACIO: Borrador = {
 export default function NewReportPage() {
   const navigate = useNavigate();
   const queryClient = useQueryClient();
+  const { user } = useAuth();
   const [borrador, setBorrador] = useState<Borrador>(BORRADOR_VACIO);
   const [paso, setPaso] = useState(1);
   const [vistaPrevia, setVistaPrevia] = useState<string | null>(null);
@@ -81,6 +86,7 @@ export default function NewReportPage() {
       datos.append("severity", borrador.severity);
       datos.append("description", borrador.description);
       datos.append("form_variant", variante.data?.variant ?? "");
+      datos.append("is_anonymous", String(borrador.is_anonymous));
       datos.append("occurred_at", new Date().toISOString());
       if (borrador.area) datos.append("area", borrador.area);
       if (borrador.category) datos.append("category", borrador.category);
@@ -129,6 +135,9 @@ export default function NewReportPage() {
   }, [vistaPrevia]);
 
   function ubicar() {
+    // US112: si el trabajador apago la ubicacion, no se le pide al navegador. El API
+    // tampoco la guardaria, pero pedir un permiso que no se va a usar es invasivo.
+    if (!user?.location_sharing) return;
     if (!navigator.geolocation) return;
     navigator.geolocation.getCurrentPosition(
       (posicion) => {
@@ -332,6 +341,28 @@ export default function NewReportPage() {
               </div>
             )}
           </div>
+        )}
+
+        <label className="field-inline">
+          <input
+            type="checkbox"
+            checked={borrador.is_anonymous}
+            onChange={(e) => set("is_anonymous", e.target.checked)}
+          />
+          <span>
+            Reportar de forma anónima.{" "}
+            <span className="muted">
+              Tu nombre no se mostrará a nadie de la empresa, ni a tu supervisor. Tú sí
+              podrás seguir este reporte desde «Reportes».
+            </span>
+          </span>
+        </label>
+
+        {!user?.location_sharing && (
+          <p className="muted small">
+            Tienes la ubicación desactivada, así que este reporte no la incluirá. Puedes
+            cambiarlo en «Privacidad».
+          </p>
         )}
 
         <ErrorBox error={crear.error} />
