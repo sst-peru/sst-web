@@ -22,6 +22,7 @@ export default function ReportDetailPage() {
   const [notaCierre, setNotaCierre] = useState("");
   const [responsable, setResponsable] = useState("");
   const [notaAsignacion, setNotaAsignacion] = useState("");
+  const [motivoDescarte, setMotivoDescarte] = useState("");
 
   const { data: reporte, isLoading } = useQuery({
     queryKey: ["report", reportId],
@@ -57,8 +58,14 @@ export default function ReportDetailPage() {
   });
 
   const descartar = useMutation({
-    mutationFn: () => reports.changeStatus(reportId, "DESCARTADO", "No corresponde a un hallazgo de SST."),
-    onSuccess: refrescar,
+    // El motivo lo escribe quien descarta. Antes se mandaba un texto fijo, y la bitácora
+    // terminaba registrando una razón que nadie había dado: para una fiscalización, un
+    // hallazgo descartado sin motivo real es un hallazgo sin respuesta.
+    mutationFn: () => reports.changeStatus(reportId, "DESCARTADO", motivoDescarte),
+    onSuccess: () => {
+      setMotivoDescarte("");
+      refrescar();
+    },
   });
 
   if (isLoading || !reporte) return <div className="centered">Cargando…</div>;
@@ -102,13 +109,21 @@ export default function ReportDetailPage() {
             <dt>Ubicación</dt>
             <dd>
               {reporte.latitude && reporte.longitude ? (
-                <a
-                  href={`https://www.google.com/maps?q=${reporte.latitude},${reporte.longitude}`}
-                  target="_blank"
-                  rel="noreferrer"
-                >
-                  Ver en el mapa
-                </a>
+                <>
+                  {/* La coordenada a la vista: sin ella el enlace no se lee como un dato
+                      de ubicación, y es el dato que ubica el peligro en obra. */}
+                  <code className="small">
+                    {reporte.latitude}, {reporte.longitude}
+                  </code>{" "}
+                  <a
+                    href={`https://www.google.com/maps?q=${reporte.latitude},${reporte.longitude}`}
+                    target="_blank"
+                    rel="noreferrer"
+                    aria-label="Abrir la ubicación del hallazgo en Google Maps"
+                  >
+                    Ver en el mapa ↗
+                  </a>
+                </>
               ) : (
                 "Sin GPS"
               )}
@@ -211,19 +226,40 @@ export default function ReportDetailPage() {
                   />
                 </Field>
                 <ErrorBox error={cerrar.error} />
-                <div className="actions">
-                  <button type="submit" disabled={cerrar.isPending}>
-                    {cerrar.isPending ? "Cerrando…" : "Cerrar hallazgo"}
-                  </button>
-                  <button
-                    type="button"
-                    className="link danger"
-                    onClick={() => descartar.mutate()}
-                    disabled={descartar.isPending}
-                  >
-                    Descartar
-                  </button>
-                </div>
+                <button type="submit" disabled={cerrar.isPending}>
+                  {cerrar.isPending ? "Cerrando…" : "Cerrar hallazgo"}
+                </button>
+              </form>
+
+              <hr />
+              <form
+                onSubmit={(e) => {
+                  e.preventDefault();
+                  descartar.mutate();
+                }}
+              >
+                <h3>Descartar el hallazgo</h3>
+                <p className="muted small">
+                  Para lo que no es un hallazgo de SST: un duplicado, una falsa alarma o un
+                  reporte abierto por error. No se cierra con acción correctiva porque no
+                  hubo nada que corregir, pero el motivo queda en la bitácora.
+                </p>
+                <Field label="Motivo del descarte" required>
+                  <input
+                    value={motivoDescarte}
+                    onChange={(e) => setMotivoDescarte(e.target.value)}
+                    placeholder="Ej: duplicado del reporte #41"
+                    required
+                  />
+                </Field>
+                <ErrorBox error={descartar.error} />
+                <button
+                  type="submit"
+                  className="secondary danger"
+                  disabled={descartar.isPending || !motivoDescarte.trim()}
+                >
+                  {descartar.isPending ? "Descartando…" : "Descartar"}
+                </button>
               </form>
             </>
           )}
