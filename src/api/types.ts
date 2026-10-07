@@ -28,6 +28,10 @@ export interface Company {
   worker_count: number;
   /** true cuando la empresa tiene 20 trabajadores o mas y la ley le exige comite. */
   requires_committee: boolean;
+  /** Cuentas de trabajador ya registradas. No incluye al administrador. */
+  worker_accounts: number;
+  /** Plazas declaradas que siguen libres: cuantas cuentas mas admite el RUC. */
+  worker_slots_available: number;
 }
 
 export interface CompanyRegistration {

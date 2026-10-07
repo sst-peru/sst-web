@@ -5,6 +5,7 @@ import type {
   Assignment,
   Category,
   Committee,
+  Company,
   CompanyRegistration,
   CommitteeCompliance,
   CommitteeMember,
@@ -41,6 +42,13 @@ export const auth = {
   registerCompany: (payload: Record<string, unknown>) =>
     api.post<CompanyRegistration>("/auth/register-company/", payload).then((r) => r.data),
   me: () => api.get<User>("/auth/me/").then((r) => r.data),
+};
+
+export const company = {
+  /** La lee cualquiera de la empresa; solo los managers pueden escribirla. */
+  get: () => api.get<Company>("/auth/company/").then((r) => r.data),
+  update: (payload: Partial<Company>) =>
+    api.patch<Company>("/auth/company/", payload).then((r) => r.data),
 };
 
 export const users = {

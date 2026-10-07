@@ -93,10 +93,10 @@ export default function RegisterCompanyPage() {
             required
             hint={
               form.worker_count === ""
-                ? "Define si la empresa necesita comité o supervisor de SST."
+                ? "Sin contarte. Es el número de cuentas que podrán registrarse con tu RUC."
                 : exigeComite
-                  ? "Con 20 o más, la ley exige comité paritario de SST."
-                  : "Con menos de 20, la ley permite un supervisor de SST."
+                  ? `${trabajadores} cuentas podrán registrarse con tu RUC. Con 20 o más, la ley exige comité paritario de SST.`
+                  : `${trabajadores} cuenta${trabajadores === 1 ? "" : "s"} podrá${trabajadores === 1 ? "" : "n"} registrarse con tu RUC. Con menos de 20, la ley permite un supervisor de SST.`
             }
           >
             <input
@@ -176,8 +176,10 @@ export default function RegisterCompanyPage() {
         </button>
 
         <p className="muted small">
-          Quedarás como <strong>administrador</strong> de la empresa. Después podrás crear las
-          áreas y las cuentas de supervisor, comité y operarios desde el panel.
+          Quedarás como <strong>administrador</strong> de la empresa y tu cuenta no ocupa
+          ninguna de las plazas declaradas. Después podrás crear las áreas, dar de alta
+          supervisores y miembros del comité, y cambiar el número de trabajadores cuando
+          entre más gente.
         </p>
         <Link to="/registro" className="small">
           Volver
