@@ -970,3 +970,18 @@ tbody tr[onclick], tbody tr.fila-activa { cursor: pointer; }
 /* Acción destructiva: roja pero secundaria, nunca compite con la acción principal. */
 button.secondary.danger { color: var(--danger-700); border-color: var(--danger-700); }
 button.secondary.danger:hover:not(:disabled) { background: var(--danger-050); }
+
+/* Accion por fila: explicita y en su propia columna. Hacer clicable la fila entera abre
+   el detalle por accidente al apuntar a cualquier otra cosa de la misma fila. */
+.ver-detalle { white-space: nowrap; font-weight: 600; }
+tbody tr:hover .ver-detalle { text-decoration: underline; }
+
+.paginado {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-top: 14px;
+  padding-top: 12px;
+  border-top: 1px solid var(--border);
+}

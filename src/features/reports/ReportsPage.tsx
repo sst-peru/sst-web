@@ -26,17 +26,32 @@ export default function ReportsPage() {
   const [status, setStatus] = useState("");
   const [kind, setKind] = useState("");
   const [area, setArea] = useState("");
+  const [severity, setSeverity] = useState("");
+  const [pagina, setPagina] = useState(1);
+
+  /** Cambiar un filtro vuelve a la primera pagina: la 4 puede no existir ya filtrado. */
+  const filtrar = (aplicar: () => void) => {
+    aplicar();
+    setPagina(1);
+  };
 
   const areas = useQuery({ queryKey: ["areas"], queryFn: areasApi.list });
   const { data, isLoading } = useQuery({
-    queryKey: ["reports", { status, kind, area }],
+    queryKey: ["reports", { status, kind, area, severity, pagina }],
     queryFn: () =>
       reports.list({
         status: status || undefined,
         kind: kind || undefined,
         area: area || undefined,
+        severity: severity || undefined,
+        page: pagina,
       }),
+    // Mantiene la tabla anterior mientras llega la pagina nueva, en vez de parpadear.
+    placeholderData: (previo) => previo,
   });
+
+  const porPagina = 20;
+  const totalPaginas = Math.max(1, Math.ceil((data?.count ?? 0) / porPagina));
 
   return (
     <>
@@ -60,7 +75,7 @@ export default function ReportsPage() {
       <section className="filters card">
         <label>
           Estado
-          <select value={status} onChange={(e) => setStatus(e.target.value)}>
+          <select value={status} onChange={(e) => filtrar(() => setStatus(e.target.value))}>
             <option value="">Todos</option>
             {Object.entries(STATUS_LABEL).map(([value, label]) => (
               <option key={value} value={value}>
@@ -71,15 +86,29 @@ export default function ReportsPage() {
         </label>
         <label>
           Tipo
-          <select value={kind} onChange={(e) => setKind(e.target.value)}>
+          <select value={kind} onChange={(e) => filtrar(() => setKind(e.target.value))}>
             <option value="">Todos</option>
             <option value="ACTO">Acto inseguro</option>
             <option value="CONDICION">Condición insegura</option>
           </select>
         </label>
         <label>
+          Severidad
+          <select
+            value={severity}
+            onChange={(e) => filtrar(() => setSeverity(e.target.value))}
+          >
+            <option value="">Todas</option>
+            {Object.keys(SEVERITY_CLASS).map((valor) => (
+              <option key={valor} value={valor}>
+                {valor.charAt(0) + valor.slice(1).toLowerCase()}
+              </option>
+            ))}
+          </select>
+        </label>
+        <label>
           Área
-          <select value={area} onChange={(e) => setArea(e.target.value)}>
+          <select value={area} onChange={(e) => filtrar(() => setArea(e.target.value))}>
             <option value="">Todas</option>
             {areas.data?.map((a) => (
               <option key={a.id} value={a.id}>
@@ -105,6 +134,7 @@ export default function ReportsPage() {
                 <th>Estado</th>
                 <th>Reportó</th>
                 <th>Fecha</th>
+                <th />
               </tr>
             </thead>
             <tbody>
@@ -122,17 +152,50 @@ export default function ReportsPage() {
                   <td>{STATUS_LABEL[report.status]}</td>
                   <td>{report.reported_by_name}</td>
                   <td>{new Date(report.created_at).toLocaleDateString("es-PE")}</td>
+                  <td>
+                    <Link
+                      to={`/reportes/${report.id}`}
+                      className="ver-detalle"
+                      aria-label={`Ver el detalle del reporte ${report.id}`}
+                    >
+                      Ver detalle
+                    </Link>
+                  </td>
                 </tr>
               ))}
               {!data?.results.length && (
                 <tr>
-                  <td colSpan={8} className="muted">
+                  <td colSpan={9} className="muted">
                     No hay reportes con esos filtros.
                   </td>
                 </tr>
               )}
             </tbody>
           </table>
+        )}
+
+        {totalPaginas > 1 && (
+          <nav className="paginado" aria-label="Paginación de reportes">
+            <button
+              type="button"
+              className="secondary"
+              onClick={() => setPagina((p) => p - 1)}
+              disabled={!data?.previous}
+            >
+              ← Anteriores
+            </button>
+            <span className="muted small">
+              Página {pagina} de {totalPaginas} · {data?.count ?? 0} reportes
+            </span>
+            <button
+              type="button"
+              className="secondary"
+              onClick={() => setPagina((p) => p + 1)}
+              disabled={!data?.next}
+            >
+              Siguientes →
+            </button>
+          </nav>
         )}
       </section>
     </>
