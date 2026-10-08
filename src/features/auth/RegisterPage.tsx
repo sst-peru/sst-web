@@ -4,6 +4,7 @@ import { Link, useNavigate } from "react-router-dom";
 
 import { auth } from "../../api/endpoints";
 import { ErrorBox, Field } from "../../components/Form";
+import MarcaAcceso from "./MarcaAcceso";
 import { useAuth } from "./AuthContext";
 
 /**
@@ -49,10 +50,7 @@ export default function RegisterPage() {
           registrar.mutate();
         }}
       >
-        <h1>Resguardo</h1>
-        <p className="muted small">
-          Registro de trabajador · Sistema de Gestión de SST
-        </p>
+        <MarcaAcceso subtitulo="Registro de trabajador · Sistema de Gestión de SST" />
 
         <div className="form-grid">
           <Field label="Nombres" required>

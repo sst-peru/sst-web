@@ -1,5 +1,7 @@
 import { Link } from "react-router-dom";
 
+import MarcaAcceso from "./MarcaAcceso";
+
 /**
  * Bifurcación del registro: empresa o trabajador.
  *
@@ -12,8 +14,7 @@ export default function RegisterChoicePage() {
   return (
     <div className="login-shell">
       <main className="card choice-card">
-        <h1>Resguardo</h1>
-        <p className="muted small">Sistema de Gestión de Seguridad y Salud en el Trabajo</p>
+        <MarcaAcceso subtitulo="Sistema de Gestión de Seguridad y Salud en el Trabajo" />
 
         <h2 id="choice-title" className="choice-title">
           ¿Cómo quieres registrarte?

@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 
+import MarcaAcceso from "./MarcaAcceso";
 import { useAuth } from "./AuthContext";
 
 export default function LoginPage() {
@@ -28,10 +29,7 @@ export default function LoginPage() {
   return (
     <div className="login-shell">
       <form className="card login-card" onSubmit={handleSubmit}>
-        <h1>Resguardo</h1>
-        <p className="muted small">
-          Sistema de Gestión de Seguridad y Salud en el Trabajo
-        </p>
+        <MarcaAcceso subtitulo="Sistema de Gestión de Seguridad y Salud en el Trabajo" />
 
         <label htmlFor="username" className="field-label">
           Usuario

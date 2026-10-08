@@ -4,6 +4,7 @@ import type { ReactNode } from "react";
 
 import { privacy } from "../../api/endpoints";
 import { ErrorBox } from "../../components/Form";
+import MarcaAcceso from "../auth/MarcaAcceso";
 import { useAuth } from "../auth/AuthContext";
 import { POLITICA_SECCIONES, POLITICA_VERSION } from "./politica";
 
@@ -29,10 +30,9 @@ export default function PrivacyGate({ children }: { children: ReactNode }) {
   return (
     <div className="login-shell">
       <main className="card politica-card">
-        <h1>Resguardo</h1>
-        <p className="muted small">
-          Política de privacidad · versión {POLITICA_VERSION} · Ley N° 29733
-        </p>
+        <MarcaAcceso
+          subtitulo={`Política de privacidad · versión ${POLITICA_VERSION} · Ley N° 29733`}
+        />
 
         <p>
           Antes de empezar necesitamos tu autorización para tratar tus datos personales.
