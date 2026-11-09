@@ -185,6 +185,9 @@ export const inspections = {
       .post<Inspection>(`/inspections/schedules/${scheduleId}/generate-next/`)
       .then((r) => r.data),
   list: (params?: object) => results<Inspection>("/inspections/", params),
+  /** Convierte una observación de la inspección en un hallazgo (US120). */
+  generateReport: (id: number, payload: { item: string; description: string; severity: string }) =>
+    api.post<Report>(`/inspections/${id}/generate-report/`, payload).then((r) => r.data),
   complete: (id: number, findings: string, checklistResults: Record<string, boolean>) =>
     api
       .post<Inspection>(`/inspections/${id}/complete/`, {

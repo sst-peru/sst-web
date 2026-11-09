@@ -1,10 +1,18 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
+import { Link } from "react-router-dom";
 
 import { areas, exportar, inspections, metrics, users } from "../../api/endpoints";
 import { ErrorBox, Field, Modal, Select } from "../../components/Form";
 import type { Inspection } from "../../api/types";
 import { useAuth } from "../auth/AuthContext";
+
+const SEVERIDADES = [
+  { value: "BAJA", label: "Baja" },
+  { value: "MEDIA", label: "Media" },
+  { value: "ALTA", label: "Alta" },
+  { value: "CRITICA", label: "Crítica" },
+];
 
 const FRECUENCIAS = [
   { value: "SEMANAL", label: "Semanal" },
@@ -27,6 +35,8 @@ export default function InspectionsPage() {
   });
   const [hallazgos, setHallazgos] = useState("");
   const [marcados, setMarcados] = useState<Record<string, boolean>>({});
+  const [origen, setOrigen] = useState<Inspection | null>(null);
+  const [observacion, setObservacion] = useState({ item: "", description: "", severity: "MEDIA" });
 
   const cumplimiento = useQuery({
     queryKey: ["compliance"],
@@ -81,6 +91,25 @@ export default function InspectionsPage() {
       setMarcados({});
     },
   });
+
+  const generarHallazgo = useMutation({
+    mutationFn: () => inspections.generateReport(origen!.id, observacion),
+    onSuccess: () => {
+      invalidar();
+      queryClient.invalidateQueries({ queryKey: ["reports"] });
+      setOrigen(null);
+      setObservacion({ item: "", description: "", severity: "MEDIA" });
+    },
+  });
+
+  function abrirObservacion(inspeccion: Inspection) {
+    // Propone el primer ítem que quedó sin marcar: es la observación más probable.
+    const noCumplidos = Object.entries(inspeccion.results ?? {})
+      .filter(([, ok]) => !ok)
+      .map(([item]) => item);
+    setOrigen(inspeccion);
+    setObservacion({ item: noCumplidos[0] ?? "", description: "", severity: "MEDIA" });
+  }
 
   function abrirEjecucion(inspeccion: Inspection) {
     const items = programas.data?.find((p) => p.id === inspeccion.schedule)?.checklist ?? [];
@@ -212,11 +241,29 @@ export default function InspectionsPage() {
                   <td>
                     {i.performed_at ? new Date(i.performed_at).toLocaleDateString("es-PE") : "—"}
                   </td>
-                  <td>{i.findings || "—"}</td>
+                  <td>
+                    {i.findings || "—"}
+                    {i.generated_reports.length > 0 && (
+                      <div className="small">
+                        Hallazgos generados:{" "}
+                        {i.generated_reports.map((id, n) => (
+                          <span key={id}>
+                            {n > 0 && ", "}
+                            <Link to={`/reportes/${id}`}>#{id}</Link>
+                          </span>
+                        ))}
+                      </div>
+                    )}
+                  </td>
                   <td>
                     {i.status !== "REALIZADA" && (
                       <button type="button" className="link" onClick={() => abrirEjecucion(i)}>
                         Realizar
+                      </button>
+                    )}
+                    {i.status === "REALIZADA" && (
+                      <button type="button" className="link" onClick={() => abrirObservacion(i)}>
+                        Generar hallazgo
                       </button>
                     )}
                   </td>
@@ -320,6 +367,61 @@ export default function InspectionsPage() {
             <div className="actions">
               <button type="submit" disabled={crearPrograma.isPending}>Crear programa</button>
               <button type="button" className="link" onClick={() => setModal(null)}>Cancelar</button>
+            </div>
+          </form>
+        </Modal>
+      )}
+
+      {origen && (
+        <Modal title={`Generar hallazgo: ${origen.title}`} onClose={() => setOrigen(null)}>
+          <form
+            onSubmit={(e) => {
+              e.preventDefault();
+              generarHallazgo.mutate();
+            }}
+          >
+            <div className="form-grid">
+              <Field label="Ítem observado">
+                <Select
+                  value={observacion.item}
+                  onChange={(v) => setObservacion({ ...observacion, item: v })}
+                  options={Object.keys(origen.results ?? {}).map((item) => ({
+                    value: item,
+                    label: origen.results[item] ? item : `${item} (no cumple)`,
+                  }))}
+                  placeholder="Sin ítem del checklist"
+                />
+              </Field>
+              <Field label="Severidad" required>
+                <Select
+                  value={observacion.severity}
+                  onChange={(v) => setObservacion({ ...observacion, severity: v })}
+                  options={SEVERIDADES}
+                  required
+                />
+              </Field>
+            </div>
+            <Field label="Qué se observó" required>
+              <textarea
+                rows={3}
+                value={observacion.description}
+                onChange={(e) => setObservacion({ ...observacion, description: e.target.value })}
+                placeholder="El extintor del pasillo 2 está tapado por cajas."
+                required
+              />
+            </Field>
+            <p className="muted small">
+              El hallazgo entra a Reportes como condición insegura del área, enlazado a esta
+              inspección, para asignarle responsable y cerrarlo.
+            </p>
+            <ErrorBox error={generarHallazgo.error} />
+            <div className="actions">
+              <button type="submit" disabled={generarHallazgo.isPending}>
+                Generar hallazgo
+              </button>
+              <button type="button" className="link" onClick={() => setOrigen(null)}>
+                Cancelar
+              </button>
             </div>
           </form>
         </Modal>

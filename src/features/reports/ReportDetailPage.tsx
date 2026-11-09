@@ -104,6 +104,12 @@ export default function ReportDetailPage() {
             <dd>{ESTADOS[reporte.status] ?? reporte.status}</dd>
             <dt>Responsable</dt>
             <dd>{reporte.assigned_to_name ?? "Sin asignar"}</dd>
+            {reporte.source_inspection_label && (
+              <>
+                <dt>Origen</dt>
+                <dd>Inspección «{reporte.source_inspection_label}»</dd>
+              </>
+            )}
             <dt>Ocurrió</dt>
             <dd>{new Date(reporte.occurred_at).toLocaleString("es-PE")}</dd>
             <dt>Ubicación</dt>
