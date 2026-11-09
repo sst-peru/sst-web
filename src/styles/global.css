@@ -1069,3 +1069,20 @@ tbody tr:hover .ver-detalle { text-decoration: underline; }
   padding-top: 12px;
   border-top: 1px solid var(--border);
 }
+
+/* ---------- Mapa de riesgos ---------- */
+.card-head { display: flex; justify-content: space-between; align-items: center; gap: 12px; margin-bottom: 12px; }
+.mapa-riesgos { display: grid; grid-template-columns: minmax(0, 3fr) minmax(220px, 1fr); gap: 20px; align-items: start; margin-top: 12px; }
+.mapa-lienzo { position: relative; border: 1px solid var(--border); border-radius: var(--radius); overflow: hidden; line-height: 0; }
+.mapa-lienzo img { width: 100%; height: auto; display: block; }
+.mapa-lienzo.editando { cursor: crosshair; outline: 2px dashed var(--navy-700); outline-offset: 2px; }
+.mapa-marca {
+  position: absolute; transform: translate(-50%, -50%);
+  width: 24px; height: 24px; border-radius: 50%;
+  background: var(--danger-700); color: #fff; border: 2px solid #fff;
+  display: grid; place-items: center; font-size: 12px; font-weight: 700; line-height: 1;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.35);
+}
+.mapa-marca.pendiente { background: var(--navy-700); }
+.mapa-leyenda { margin: 0; padding-left: 22px; display: flex; flex-direction: column; gap: 8px; font-size: 13px; }
+@media (max-width: 860px) { .mapa-riesgos { grid-template-columns: 1fr; } }

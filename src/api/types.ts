@@ -560,3 +560,70 @@ export interface Drill {
   evacuation_seconds: number | null;
   observations: string;
 }
+
+/* ---------- Mapa de riesgos y señalización ---------- */
+
+export type RiskKind =
+  | "MECANICO"
+  | "ELECTRICO"
+  | "CAIDA"
+  | "QUIMICO"
+  | "FISICO"
+  | "BIOLOGICO"
+  | "ERGONOMICO"
+  | "INCENDIO"
+  | "LOCATIVO";
+
+export interface RiskMarker {
+  id: number;
+  kind: RiskKind;
+  kind_display: string;
+  label: string;
+  /** Posición en porcentaje del ancho y alto del plano. */
+  x: string;
+  y: string;
+}
+
+export interface RiskMap {
+  id: number;
+  area: number;
+  area_name: string;
+  title: string;
+  plan: string;
+  published_at: string;
+  published_by: number | null;
+  published_by_name: string | null;
+  is_current: boolean;
+  markers: RiskMarker[];
+}
+
+export type SignKind =
+  | "PROHIBICION"
+  | "OBLIGACION"
+  | "ADVERTENCIA"
+  | "EVACUACION"
+  | "CONTRA_INCENDIO";
+export type SignStatus = "BUENO" | "DETERIORADA" | "FALTANTE";
+
+export interface SafetySign {
+  id: number;
+  area: number;
+  area_name: string;
+  kind: SignKind;
+  kind_display: string;
+  description: string;
+  location: string;
+  status: SignStatus;
+  status_display: string;
+  is_observed: boolean;
+  last_checked_on: string | null;
+  notes: string;
+}
+
+export interface SignageSummary {
+  area: number;
+  area_name: string;
+  expected: number;
+  installed: number;
+  observed: number;
+}

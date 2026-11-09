@@ -20,6 +20,7 @@ import NewReportPage from "./features/reports/NewReportPage";
 import ReportDetailPage from "./features/reports/ReportDetailPage";
 import ReportsPage from "./features/reports/ReportsPage";
 import UsersPage from "./features/users/UsersPage";
+import RiskMapPage from "./features/riskmap/RiskMapPage";
 import TrainingPage from "./features/training/TrainingPage";
 import type { ReactNode } from "react";
 
@@ -61,6 +62,7 @@ export default function App() {
         <Route path="/epp" element={<EppPage />} />
         <Route path="/comite" element={<CommitteePage />} />
         <Route path="/capacitacion" element={<TrainingPage />} />
+        <Route path="/mapa-riesgos" element={<RiskMapPage />} />
         <Route path="/privacidad" element={<PrivacyPage />} />
         <Route
           path="/experimento"
