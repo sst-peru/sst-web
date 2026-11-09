@@ -466,3 +466,97 @@ export interface Assignment {
   variant: string;
   assigned_at: string;
 }
+
+/* ---------- Capacitación y simulacros ---------- */
+
+export type TrainingStatus = "PROGRAMADA" | "REALIZADA" | "CANCELADA";
+
+export interface TrainingSession {
+  id: number;
+  topic: string;
+  planned_date: string;
+  responsible: number | null;
+  responsible_name: string | null;
+  trainer: string;
+  audience: string;
+  area: number | null;
+  area_name: string | null;
+  duration_hours: string;
+  validity_months: number;
+  status: TrainingStatus;
+  status_display: string;
+  held_on: string | null;
+  expires_on: string | null;
+  attendance_count: number;
+}
+
+export interface TrainingAttendance {
+  id: number;
+  session: number;
+  worker: number;
+  worker_name: string;
+  registered_at: string;
+}
+
+export interface TrainingSummary {
+  year: number;
+  planned: number;
+  held: number;
+  minimum_required: number;
+  meets_minimum: boolean;
+}
+
+export interface TrainingPending {
+  worker: number;
+  worker_name: string;
+  last_training_on: string | null;
+  expired_on: string | null;
+  reason: "VENCIDA" | "SIN_CAPACITACION";
+}
+
+export interface MyTraining {
+  induction_on: string | null;
+  trainings: {
+    session: number;
+    topic: string;
+    held_on: string | null;
+    expires_on: string | null;
+    is_valid: boolean;
+  }[];
+}
+
+export interface Induction {
+  id: number;
+  worker: number;
+  worker_name: string;
+  completed_on: string;
+  given_by: number | null;
+  given_by_name: string | null;
+  topics: string;
+}
+
+export interface InductionPending {
+  worker: number;
+  worker_name: string;
+  joined_on: string;
+}
+
+export type DrillKind =
+  | "SISMO"
+  | "INCENDIO"
+  | "DERRAME"
+  | "PRIMEROS_AUXILIOS"
+  | "EVACUACION"
+  | "OTRO";
+
+export interface Drill {
+  id: number;
+  kind: DrillKind;
+  kind_display: string;
+  held_on: string;
+  area: number | null;
+  area_name: string | null;
+  participants: number;
+  evacuation_seconds: number | null;
+  observations: string;
+}

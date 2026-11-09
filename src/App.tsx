@@ -20,6 +20,7 @@ import NewReportPage from "./features/reports/NewReportPage";
 import ReportDetailPage from "./features/reports/ReportDetailPage";
 import ReportsPage from "./features/reports/ReportsPage";
 import UsersPage from "./features/users/UsersPage";
+import TrainingPage from "./features/training/TrainingPage";
 import type { ReactNode } from "react";
 
 /** Solo managers. Un operario que llegue por URL va a sus reportes, no a un 403. */
@@ -59,6 +60,7 @@ export default function App() {
         <Route path="/inspecciones" element={<InspectionsPage />} />
         <Route path="/epp" element={<EppPage />} />
         <Route path="/comite" element={<CommitteePage />} />
+        <Route path="/capacitacion" element={<TrainingPage />} />
         <Route path="/privacidad" element={<PrivacyPage />} />
         <Route
           path="/experimento"
