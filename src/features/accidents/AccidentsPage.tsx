@@ -116,6 +116,7 @@ export default function AccidentsPage() {
     method: "CINCO_POR_QUE",
     immediate_causes: "",
     basic_causes: "",
+    management_causes: "",
     root_cause: "",
     conclusions: "",
     participants: "",
@@ -425,6 +426,10 @@ export default function AccidentsPage() {
                 <dd>{actual.investigation.basic_causes || "—"}</dd>
               </div>
               <div>
+                <dt>Causas de gestión</dt>
+                <dd>{actual.investigation.management_causes || "—"}</dd>
+              </div>
+              <div>
                 <dt>Causa raíz</dt>
                 <dd>{actual.investigation.root_cause}</dd>
               </div>
@@ -694,6 +699,18 @@ export default function AccidentsPage() {
                   value={investigacion.basic_causes}
                   onChange={(e) =>
                     setInvestigacion({ ...investigacion, basic_causes: e.target.value })
+                  }
+                />
+              </Field>
+              <Field
+                label="Causas de gestión"
+                hint="Fallas del sistema de gestión: procedimiento, capacitación o supervisión que faltó."
+              >
+                <textarea
+                  rows={2}
+                  value={investigacion.management_causes}
+                  onChange={(e) =>
+                    setInvestigacion({ ...investigacion, management_causes: e.target.value })
                   }
                 />
               </Field>

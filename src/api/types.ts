@@ -114,6 +114,7 @@ export interface Investigation {
   method_display: string;
   immediate_causes: string;
   basic_causes: string;
+  management_causes: string;
   root_cause: string;
   conclusions: string;
   participants: string;
