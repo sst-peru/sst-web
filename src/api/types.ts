@@ -186,6 +186,7 @@ export interface OccupationalDisease {
   worker_label: string;
   area: number | null;
   area_name: string | null;
+  job_position: string;
   diagnosis: string;
   cie10_code: string;
   causal_agent: string;

@@ -131,6 +131,7 @@ export default function AccidentsPage() {
   const [enfermedad, setEnfermedad] = useState({
     worker_name: "",
     area: "",
+    job_position: "",
     diagnosis: "",
     cie10_code: "",
     causal_agent: "",
@@ -498,6 +499,7 @@ export default function AccidentsPage() {
                 <th>Diagnóstico</th>
                 <th>CIE-10</th>
                 <th>Trabajador</th>
+                <th>Puesto</th>
                 <th>Agente causal</th>
                 <th>Diagnosticada</th>
                 <th>Descanso</th>
@@ -510,6 +512,7 @@ export default function AccidentsPage() {
                   <td>{e.diagnosis}</td>
                   <td>{e.cie10_code || "—"}</td>
                   <td>{e.worker_label || "—"}</td>
+                  <td>{e.job_position || "—"}</td>
                   <td>{e.causal_agent || "—"}</td>
                   <td>{soloFecha(e.diagnosed_on)}</td>
                   <td>{e.rest_days} d</td>
@@ -879,6 +882,13 @@ export default function AccidentsPage() {
                   value={enfermedad.cie10_code}
                   onChange={(e) => setEnfermedad({ ...enfermedad, cie10_code: e.target.value })}
                   maxLength={10}
+                />
+              </Field>
+              <Field label="Puesto de trabajo" hint="La tarea que expone al agente: soldador, operador de amoladora…">
+                <input
+                  value={enfermedad.job_position}
+                  onChange={(e) => setEnfermedad({ ...enfermedad, job_position: e.target.value })}
+                  maxLength={120}
                 />
               </Field>
               <Field label="Agente causal" hint="Ruido, sílice, plomo, carga postural…">
