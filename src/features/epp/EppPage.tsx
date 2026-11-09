@@ -149,7 +149,11 @@ export default function EppPage() {
                   <td>{d.quantity}</td>
                   <td>{new Date(d.delivered_at).toLocaleDateString("es-PE")}</td>
                   <td>
-                    {d.expires_at ? new Date(d.expires_at).toLocaleDateString("es-PE") : "—"}
+                    {/* Fecha sin hora: con T00:00:00 se lee como medianoche local y no como UTC,
+                        que en Lima mostraría el día anterior. */}
+                    {d.expires_at
+                      ? new Date(`${d.expires_at}T00:00:00`).toLocaleDateString("es-PE")
+                      : "—"}
                     {d.is_expired && <span className="pill pill-critical">Vencido</span>}
                   </td>
                   <td>
