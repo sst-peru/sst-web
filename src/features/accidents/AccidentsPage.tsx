@@ -42,8 +42,20 @@ const ESTADOS_ENFERMEDAD = [
 const fecha = (iso: string | null) =>
   iso ? new Date(iso).toLocaleString("es-PE", { dateStyle: "medium", timeStyle: "short" }) : "—";
 
+/**
+ * Fecha sin hora para mostrar.
+ *
+ * Los campos de solo fecha del API llegan como "2026-11-05", y el navegador interpreta ese
+ * formato como medianoche en UTC: en Lima (UTC−5) eso es el día anterior a las 7 p. m. y la
+ * tabla mostraba un día menos. Agregando la hora sin zona se lee como medianoche local.
+ */
 const soloFecha = (iso: string | null) =>
-  iso ? new Date(iso).toLocaleDateString("es-PE", { dateStyle: "medium" }) : "—";
+  iso
+    ? new Date(/^\d{4}-\d{2}-\d{2}$/.test(iso) ? `${iso}T00:00:00` : iso).toLocaleDateString(
+        "es-PE",
+        { dateStyle: "medium" },
+      )
+    : "—";
 
 /** Texto del plazo de 24 horas del artículo 82, que es lo que genera la sanción. */
 function avisoPlazo(a: Accident): { texto: string; clase: string } | null {
