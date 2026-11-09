@@ -26,6 +26,14 @@ import type {
   Paginated,
   PrivacyState,
   Report,
+  TrainingAttendance,
+  TrainingPending,
+  TrainingSession,
+  TrainingSummary,
+  Drill,
+  Induction,
+  InductionPending,
+  MyTraining,
   User,
 } from "./types";
 
@@ -180,6 +188,32 @@ export const inspections = {
         results: checklistResults,
       })
       .then((r) => r.data),
+};
+
+export const training = {
+  sessions: (params?: object) => results<TrainingSession>("/training/sessions/", params),
+  createSession: (payload: Record<string, unknown>) =>
+    api.post<TrainingSession>("/training/sessions/", payload).then((r) => r.data),
+  cancelSession: (id: number) =>
+    api.post<TrainingSession>(`/training/sessions/${id}/cancel/`).then((r) => r.data),
+  attendance: (id: number) =>
+    api.get<TrainingAttendance[]>(`/training/sessions/${id}/attendance/`).then((r) => r.data),
+  registerAttendance: (id: number, workers: number[], held_on?: string) =>
+    api
+      .post<TrainingAttendance[]>(`/training/sessions/${id}/attendance/`, { workers, held_on })
+      .then((r) => r.data),
+  summary: (year?: number) =>
+    api.get<TrainingSummary>("/training/summary/", { params: { year } }).then((r) => r.data),
+  pending: () => api.get<TrainingPending[]>("/training/pending/").then((r) => r.data),
+  mine: () => api.get<MyTraining>("/training/mine/").then((r) => r.data),
+  inductions: () => results<Induction>("/training/inductions/"),
+  pendingInductions: () =>
+    api.get<InductionPending[]>("/training/inductions/pending/").then((r) => r.data),
+  createInduction: (payload: Record<string, unknown>) =>
+    api.post<Induction>("/training/inductions/", payload).then((r) => r.data),
+  drills: () => results<Drill>("/training/drills/"),
+  createDrill: (payload: Record<string, unknown>) =>
+    api.post<Drill>("/training/drills/", payload).then((r) => r.data),
 };
 
 export const committee = {
