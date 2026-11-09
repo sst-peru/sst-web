@@ -45,6 +45,11 @@ const fecha = (iso: string | null) =>
 const soloFecha = (iso: string | null) =>
   iso ? new Date(iso).toLocaleDateString("es-PE", { dateStyle: "medium" }) : "—";
 
+/** Número del registro con ceros a la izquierda, como se cita en el libro de accidentes. */
+function numeroRegistro(numero: number): string {
+  return String(numero).padStart(3, "0");
+}
+
 /** Texto del plazo de 24 horas del artículo 82, que es lo que genera la sanción. */
 function avisoPlazo(a: Accident): { texto: string; clase: string } | null {
   if (!a.requires_immediate_notice) return null;
@@ -293,6 +298,7 @@ export default function AccidentsPage() {
           <table>
             <thead>
               <tr>
+                <th>N°</th>
                 <th>Ocurrió</th>
                 <th>Tipo</th>
                 <th>Gravedad</th>
@@ -312,6 +318,7 @@ export default function AccidentsPage() {
                     onClick={() => setSeleccionado(a.id)}
                     className={a.id === seleccionado ? "fila-activa" : undefined}
                   >
+                    <td>{numeroRegistro(a.number)}</td>
                     <td>{fecha(a.occurred_at)}</td>
                     <td>{a.kind_display}</td>
                     <td>{a.severity_display}</td>
@@ -338,7 +345,10 @@ export default function AccidentsPage() {
       {actual && (
         <section className="card" aria-live="polite">
           <header className="row">
-            <h2>Expediente del {actual.kind_display.toLowerCase()} del {soloFecha(actual.occurred_at)}</h2>
+            <h2>
+              Expediente N° {numeroRegistro(actual.number)} · {actual.kind_display.toLowerCase()} del{" "}
+              {soloFecha(actual.occurred_at)}
+            </h2>
             <button type="button" className="link" onClick={() => setSeleccionado(null)}>
               Cerrar vista
             </button>

@@ -141,6 +141,8 @@ export interface CorrectiveMeasure {
 
 export interface Accident {
   id: number;
+  /** Correlativo del registro dentro de la empresa (US71). */
+  number: number;
   kind: AccidentKind;
   kind_display: string;
   severity: AccidentSeverity;
