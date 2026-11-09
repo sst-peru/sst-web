@@ -38,6 +38,12 @@ import type {
   RiskMarker,
   SafetySign,
   SignageSummary,
+  AnnualPlan,
+  DocumentReceipts,
+  DocumentVersion,
+  PlanActivity,
+  PlanProgress,
+  SgsstDocument,
   User,
 } from "./types";
 
@@ -236,6 +242,37 @@ export const signs = {
     api.patch<SafetySign>(`/signs/${id}/`, payload).then((r) => r.data),
   remove: (id: number) => api.delete(`/signs/${id}/`).then(() => id),
   summary: () => api.get<SignageSummary[]>("/signs-summary/").then((r) => r.data),
+};
+
+export const documents = {
+  list: () => results<SgsstDocument>("/documents/"),
+  create: (payload: Record<string, unknown>) =>
+    api.post<SgsstDocument>("/documents/", payload).then((r) => r.data),
+  acknowledge: (id: number) =>
+    api.post<SgsstDocument>(`/documents/${id}/acknowledge/`).then((r) => r.data),
+  receipts: (id: number) =>
+    api.get<DocumentReceipts>(`/documents/${id}/receipts/`).then((r) => r.data),
+  versions: (documentId: number) =>
+    results<DocumentVersion>("/document-versions/", { document: documentId }),
+  /** FormData porque puede ir el archivo firmado. */
+  createVersion: (payload: FormData) =>
+    api.post<DocumentVersion>("/document-versions/", payload).then((r) => r.data),
+  publishVersion: (id: number) =>
+    api.post<DocumentVersion>(`/document-versions/${id}/publish/`).then((r) => r.data),
+  deleteVersion: (id: number) => api.delete(`/document-versions/${id}/`).then(() => id),
+};
+
+export const sstPlans = {
+  byYear: (year: number) =>
+    results<AnnualPlan>("/sst-plans/", { year }).then((list) => list[0] ?? null),
+  create: (payload: Record<string, unknown>) =>
+    api.post<AnnualPlan>("/sst-plans/", payload).then((r) => r.data),
+  progress: (id: number) =>
+    api.get<PlanProgress>(`/sst-plans/${id}/progress/`).then((r) => r.data),
+  addActivity: (payload: Record<string, unknown>) =>
+    api.post<PlanActivity>("/sst-plan-activities/", payload).then((r) => r.data),
+  updateActivity: (id: number, payload: Record<string, unknown>) =>
+    api.patch<PlanActivity>(`/sst-plan-activities/${id}/`, payload).then((r) => r.data),
 };
 
 export const committee = {

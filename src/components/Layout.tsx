@@ -24,6 +24,7 @@ const NAV: { to: string; label: string; managerOnly?: boolean; end?: boolean }[]
   { to: "/comite", label: "Comité de SST" },
   { to: "/capacitacion", label: "Capacitación y simulacros" },
   { to: "/mapa-riesgos", label: "Mapa de riesgos" },
+  { to: "/documentos", label: "Documentos del SGSST" },
   { to: "/privacidad", label: "Privacidad" },
   { to: "/experimento", label: "Experimento A/B", managerOnly: true },
   { to: "/usuarios", label: "Usuarios y áreas", managerOnly: true },

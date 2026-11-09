@@ -627,3 +627,78 @@ export interface SignageSummary {
   installed: number;
   observed: number;
 }
+
+/* ---------- Documentos y plan anual del SGSST ---------- */
+
+export type DocumentKind = "POLITICA" | "RISST" | "PROCEDIMIENTO" | "PROGRAMA" | "OTRO";
+export type VersionStatus = "BORRADOR" | "VIGENTE" | "HISTORICA";
+
+export interface DocumentVersion {
+  id: number;
+  document: number;
+  number: number;
+  content: string;
+  file: string | null;
+  approved_by: string;
+  approved_on: string | null;
+  change_summary: string;
+  status: VersionStatus;
+  status_display: string;
+  valid_from: string | null;
+  valid_until: string | null;
+  created_by_name: string | null;
+  created_at: string;
+  receipt_count: number;
+}
+
+export interface SgsstDocument {
+  id: number;
+  kind: DocumentKind;
+  kind_display: string;
+  title: string;
+  code: string;
+  requires_receipt: boolean;
+  current_version: DocumentVersion | null;
+  /** null si el documento no exige constancia o no tiene versión vigente. */
+  received_by_me: boolean | null;
+}
+
+export interface DocumentReceipts {
+  version: number | null;
+  received: { worker: number; worker_name: string; received_at: string }[];
+  pending: { worker: number; worker_name: string }[];
+}
+
+export type ActivityStatus = "PENDIENTE" | "EJECUTADA" | "REPROGRAMADA";
+
+export interface PlanActivity {
+  id: number;
+  plan: number;
+  objective: string;
+  description: string;
+  responsible: number | null;
+  responsible_name: string | null;
+  planned_month: number;
+  status: ActivityStatus;
+  status_display: string;
+  executed_on: string | null;
+  evidence: string;
+}
+
+export interface AnnualPlan {
+  id: number;
+  year: number;
+  objectives: string;
+  approved_on: string | null;
+  activities: PlanActivity[];
+}
+
+export interface PlanProgress {
+  year: number;
+  cutoff_month: number;
+  total: number;
+  programmed_to_date: number;
+  executed: number;
+  progress_pct: number | null;
+  annual_progress_pct: number | null;
+}
