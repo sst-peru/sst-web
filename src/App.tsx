@@ -4,6 +4,7 @@ import Layout from "./components/Layout";
 import ProtectedRoute from "./components/ProtectedRoute";
 import { useAuth } from "./features/auth/AuthContext";
 import LoginPage from "./features/auth/LoginPage";
+import { ForgotPasswordPage, ResetPasswordPage } from "./features/auth/PasswordResetPage";
 import RegisterChoicePage from "./features/auth/RegisterChoicePage";
 import RegisterCompanyPage from "./features/auth/RegisterCompanyPage";
 import RegisterPage from "./features/auth/RegisterPage";
@@ -41,6 +42,8 @@ export default function App() {
   return (
     <Routes>
       <Route path="/login" element={<LoginPage />} />
+      <Route path="/recuperar" element={<ForgotPasswordPage />} />
+      <Route path="/restablecer" element={<ResetPasswordPage />} />
       <Route path="/registro" element={<RegisterChoicePage />} />
       <Route path="/registro/empresa" element={<RegisterCompanyPage />} />
       <Route path="/registro/trabajador" element={<RegisterPage />} />

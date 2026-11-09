@@ -63,6 +63,9 @@ export default function LoginPage() {
         <Link to="/registro" className="small">
           No tengo cuenta, quiero registrarme
         </Link>
+        <Link to="/recuperar" className="small">
+          Olvidé mi contraseña
+        </Link>
 
         <p className="login-legal">
           Ley N° 29783 · Reglamento D.S. N° 005-2012-TR

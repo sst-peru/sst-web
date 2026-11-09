@@ -65,6 +65,12 @@ export const auth = {
   registerCompany: (payload: Record<string, unknown>) =>
     api.post<CompanyRegistration>("/auth/register-company/", payload).then((r) => r.data),
   me: () => api.get<User>("/auth/me/").then((r) => r.data),
+  requestPasswordReset: (email: string) =>
+    api.post("/auth/password-reset/", { email }).then(() => undefined),
+  confirmPasswordReset: (uid: string, token: string, new_password: string) =>
+    api
+      .post("/auth/password-reset/confirm/", { uid, token, new_password })
+      .then(() => undefined),
 };
 
 export const privacy = {
