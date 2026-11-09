@@ -45,6 +45,11 @@ const fecha = (iso: string | null) =>
 const soloFecha = (iso: string | null) =>
   iso ? new Date(iso).toLocaleDateString("es-PE", { dateStyle: "medium" }) : "—";
 
+/** Número del registro con ceros a la izquierda, como se cita en el libro de accidentes. */
+function numeroRegistro(numero: number): string {
+  return String(numero).padStart(3, "0");
+}
+
 /** Texto del plazo de 24 horas del artículo 82, que es lo que genera la sanción. */
 function avisoPlazo(a: Accident): { texto: string; clase: string } | null {
   if (!a.requires_immediate_notice) return null;
@@ -111,6 +116,7 @@ export default function AccidentsPage() {
     method: "CINCO_POR_QUE",
     immediate_causes: "",
     basic_causes: "",
+    management_causes: "",
     root_cause: "",
     conclusions: "",
     participants: "",
@@ -125,6 +131,7 @@ export default function AccidentsPage() {
   const [enfermedad, setEnfermedad] = useState({
     worker_name: "",
     area: "",
+    job_position: "",
     diagnosis: "",
     cie10_code: "",
     causal_agent: "",
@@ -293,6 +300,7 @@ export default function AccidentsPage() {
           <table>
             <thead>
               <tr>
+                <th>N°</th>
                 <th>Ocurrió</th>
                 <th>Tipo</th>
                 <th>Gravedad</th>
@@ -312,6 +320,7 @@ export default function AccidentsPage() {
                     onClick={() => setSeleccionado(a.id)}
                     className={a.id === seleccionado ? "fila-activa" : undefined}
                   >
+                    <td>{numeroRegistro(a.number)}</td>
                     <td>{fecha(a.occurred_at)}</td>
                     <td>{a.kind_display}</td>
                     <td>{a.severity_display}</td>
@@ -338,7 +347,10 @@ export default function AccidentsPage() {
       {actual && (
         <section className="card" aria-live="polite">
           <header className="row">
-            <h2>Expediente del {actual.kind_display.toLowerCase()} del {soloFecha(actual.occurred_at)}</h2>
+            <h2>
+              Expediente N° {numeroRegistro(actual.number)} · {actual.kind_display.toLowerCase()} del{" "}
+              {soloFecha(actual.occurred_at)}
+            </h2>
             <button type="button" className="link" onClick={() => setSeleccionado(null)}>
               Cerrar vista
             </button>
@@ -415,6 +427,10 @@ export default function AccidentsPage() {
                 <dd>{actual.investigation.basic_causes || "—"}</dd>
               </div>
               <div>
+                <dt>Causas de gestión</dt>
+                <dd>{actual.investigation.management_causes || "—"}</dd>
+              </div>
+              <div>
                 <dt>Causa raíz</dt>
                 <dd>{actual.investigation.root_cause}</dd>
               </div>
@@ -483,6 +499,7 @@ export default function AccidentsPage() {
                 <th>Diagnóstico</th>
                 <th>CIE-10</th>
                 <th>Trabajador</th>
+                <th>Puesto</th>
                 <th>Agente causal</th>
                 <th>Diagnosticada</th>
                 <th>Descanso</th>
@@ -495,6 +512,7 @@ export default function AccidentsPage() {
                   <td>{e.diagnosis}</td>
                   <td>{e.cie10_code || "—"}</td>
                   <td>{e.worker_label || "—"}</td>
+                  <td>{e.job_position || "—"}</td>
                   <td>{e.causal_agent || "—"}</td>
                   <td>{soloFecha(e.diagnosed_on)}</td>
                   <td>{e.rest_days} d</td>
@@ -688,6 +706,18 @@ export default function AccidentsPage() {
                 />
               </Field>
               <Field
+                label="Causas de gestión"
+                hint="Fallas del sistema de gestión: procedimiento, capacitación o supervisión que faltó."
+              >
+                <textarea
+                  rows={2}
+                  value={investigacion.management_causes}
+                  onChange={(e) =>
+                    setInvestigacion({ ...investigacion, management_causes: e.target.value })
+                  }
+                />
+              </Field>
+              <Field
                 label="Causa raíz"
                 required
                 hint="Obligatoria: quedarse en la causa inmediata es la observación más frecuente de una fiscalización."
@@ -852,6 +882,13 @@ export default function AccidentsPage() {
                   value={enfermedad.cie10_code}
                   onChange={(e) => setEnfermedad({ ...enfermedad, cie10_code: e.target.value })}
                   maxLength={10}
+                />
+              </Field>
+              <Field label="Puesto de trabajo" hint="La tarea que expone al agente: soldador, operador de amoladora…">
+                <input
+                  value={enfermedad.job_position}
+                  onChange={(e) => setEnfermedad({ ...enfermedad, job_position: e.target.value })}
+                  maxLength={120}
                 />
               </Field>
               <Field label="Agente causal" hint="Ruido, sílice, plomo, carga postural…">

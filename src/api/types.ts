@@ -114,6 +114,7 @@ export interface Investigation {
   method_display: string;
   immediate_causes: string;
   basic_causes: string;
+  management_causes: string;
   root_cause: string;
   conclusions: string;
   participants: string;
@@ -141,6 +142,8 @@ export interface CorrectiveMeasure {
 
 export interface Accident {
   id: number;
+  /** Correlativo del registro dentro de la empresa (US71). */
+  number: number;
   kind: AccidentKind;
   kind_display: string;
   severity: AccidentSeverity;
@@ -183,6 +186,7 @@ export interface OccupationalDisease {
   worker_label: string;
   area: number | null;
   area_name: string | null;
+  job_position: string;
   diagnosis: string;
   cie10_code: string;
   causal_agent: string;
