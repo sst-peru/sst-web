@@ -87,6 +87,9 @@ export interface Report {
   reported_by: number | null;
   reported_by_name: string;
   is_anonymous: boolean;
+  /** Inspección de la que salió el hallazgo, si se generó desde una observación. */
+  source_inspection: number | null;
+  source_inspection_label: string | null;
   occurred_at: string;
   created_at: string;
   closed_at: string | null;
@@ -366,6 +369,8 @@ export interface Inspection {
   findings: string;
   results: Record<string, boolean>;
   is_overdue: boolean;
+  /** Ids de los hallazgos generados desde esta inspección (US120). */
+  generated_reports: number[];
 }
 
 // ---------------------------------------------------------------------------
