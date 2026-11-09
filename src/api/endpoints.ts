@@ -34,6 +34,10 @@ import type {
   Induction,
   InductionPending,
   MyTraining,
+  RiskMap,
+  RiskMarker,
+  SafetySign,
+  SignageSummary,
   User,
 } from "./types";
 
@@ -214,6 +218,24 @@ export const training = {
   drills: () => results<Drill>("/training/drills/"),
   createDrill: (payload: Record<string, unknown>) =>
     api.post<Drill>("/training/drills/", payload).then((r) => r.data),
+};
+
+export const riskMaps = {
+  list: (params?: object) => results<RiskMap>("/risk-maps/", params),
+  /** FormData porque va el plano como imagen. */
+  publish: (payload: FormData) => api.post<RiskMap>("/risk-maps/", payload).then((r) => r.data),
+  saveMarkers: (id: number, markers: Omit<RiskMarker, "id" | "kind_display">[]) =>
+    api.put<RiskMarker[]>(`/risk-maps/${id}/markers/`, markers).then((r) => r.data),
+};
+
+export const signs = {
+  list: (params?: object) => results<SafetySign>("/signs/", params),
+  create: (payload: Record<string, unknown>) =>
+    api.post<SafetySign>("/signs/", payload).then((r) => r.data),
+  update: (id: number, payload: Record<string, unknown>) =>
+    api.patch<SafetySign>(`/signs/${id}/`, payload).then((r) => r.data),
+  remove: (id: number) => api.delete(`/signs/${id}/`).then(() => id),
+  summary: () => api.get<SignageSummary[]>("/signs-summary/").then((r) => r.data),
 };
 
 export const committee = {
